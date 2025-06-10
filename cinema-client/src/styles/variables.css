@@ -1,0 +1,19 @@
+
+/*
+**Usage suggestion:**
+- Use the midnight blue and navy for headers, navbars, and footers.
+- Accent with vivid red for buttons, CTAs, and highlights.
+- Warm gold for ratings, stars, or ticket highlights.
+- Light gray for backgrounds and cards.
+- Charcoal black for main text, slate gray for secondary text.
+*/
+
+:root {
+  --color-primary: #A86523;
+  --color-accent: #E9A319;
+  --color-secondary: #FAD59A;
+  --color-highlight: #F9D923;
+  --color-background: #FCEFCB;
+  --color-text: #4a4a4b;
+  --color-muted: #515152;
+}
