@@ -5,7 +5,7 @@ type AuthContextType = {
   isAuthenticated: boolean;
   role: string | null;
   loading: boolean;
-  login: (email:string, password: string) => void;
+  login: (email: string, password: string) => void;
   logout: () => void;
 };
 
@@ -26,10 +26,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       const status = await checkAuthStatus();
       setIsAuthenticated(true);
       setRole(status.role);
-    }catch (error) {
+    } catch (error) {
       setIsAuthenticated(false);
       setRole(null);
-      console.error("Auth check failed:" , error);
+      console.error("Auth check failed:", error);
     } finally {
       setLoading(false);
     }
@@ -50,7 +50,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     checkAuth();
   }, []);
 
-  const  login = async (email: string, password: string) => {
+  const login = async (email: string, password: string) => {
     setLoading(true);
     try {
       await loginUser(email, password);
@@ -62,29 +62,31 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     } finally {
       setLoading(false);
     }
-  }
+  };
 
   const logout = async () => {
     try {
       await logoutUser();
       setIsAuthenticated(false);
       setRole(null);
-    }catch (error:any) {
+    } catch (error: any) {
       console.log("Failed to log out", error);
     }
   };
 
   return (
-    <AuthContext.Provider value={{isAuthenticated, role, login, logout, loading}}>
+    <AuthContext.Provider
+      value={{ isAuthenticated, role, login, logout, loading }}
+    >
       {children}
     </AuthContext.Provider>
-  )
+  );
 };
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
-  if(!context) {
-    throw new Error("useAuth must be used within an AuthProvider")
+  if (!context) {
+    throw new Error("useAuth must be used within an AuthProvider");
   }
-  return context
-}
+  return context;
+};

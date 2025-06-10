@@ -1,13 +1,11 @@
 import { AuthProvider } from "./context/AuthContext";
-import './App.css'
+import LoginPage from "./pages/LoginPage"
+import "./App.css";
 
 function App() {
+  return <AuthProvider>
+    <LoginPage />
+  </AuthProvider>
+  }
 
-  return (
-    <AuthProvider>
-
-    </AuthProvider>
-  )
-}
-
-export default App
+export default App;
