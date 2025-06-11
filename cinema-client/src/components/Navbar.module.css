@@ -1,0 +1,133 @@
+@import "../styles/variables.css";
+
+.navbar {
+  background-color: var(--color-background);
+  height: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.2rem;
+  position: sticky;
+  top: 0;
+  z-index: 999;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 1rem 0;
+}
+
+.navContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 1;
+  width: 100%;
+  max-width: 1300px;
+  padding: 0 24px;
+}
+
+.navLogo {
+  color: var(--color-primary);
+  justify-self: flex-start;
+  cursor: pointer;
+  text-decoration: none;
+  font-size: 2rem;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  transition: color 0.3s ease;
+  margin-bottom: 1rem;
+}
+
+.navLogo:hover {
+  color: var(--color-accent);
+}
+
+.navMenu {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  list-style: none;
+  text-align: center;
+  margin-right: 0;
+  margin-bottom: 1rem;
+}
+
+.navItem {
+  height: auto;
+  margin: 0.5rem 0;
+}
+
+.navLink {
+  color: var(--color-primary);
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  transition: color 0.3s ease, border-bottom 0.3s ease;
+  border-bottom: 3px solid transparent;
+}
+
+.navLink:hover {
+  color: var(--color-accent);
+  border-bottom: 3px solid var(--color-highlight);
+}
+
+.authButton:hover,
+.welcomeUser:hover {
+  color: var(--color-accent);
+}
+
+.navAuth {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.welcomeUser {
+  color: var(--color-primary);
+  font-size: 1rem;
+  margin-right: 0;
+  margin-bottom: 0.5rem;
+  margin-top: 1.5em;
+}
+
+.authButton {
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  background: var(--color-background);
+  color: var(--color-primary);
+  border: none;
+  outline: none;
+  cursor: pointer;
+  transition: all 0.3s ease-out;
+  text-decoration: none;
+  font-size: 1rem;
+  font-weight: 500;
+  margin-top: 1em;
+}
+
+@media screen and (min-width: 768px) {
+  .navContainer {
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .navMenu {
+    flex-direction: row;
+    margin-bottom: 0;
+  }
+
+  .navItem {
+    margin: 0;
+  }
+
+  .navAuth {
+    flex-direction: row;
+  }
+
+  .navLogo {
+    margin-bottom: 0;
+  }
+}
