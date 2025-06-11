@@ -1,4 +1,3 @@
-
 /*
 **Usage suggestion:**
 - Use the midnight blue and navy for headers, navbars, and footers.
@@ -9,11 +8,11 @@
 */
 
 :root {
-  --color-primary: #A86523;
-  --color-accent: #E9A319;
-  --color-secondary: #FAD59A;
-  --color-highlight: #F9D923;
-  --color-background: #FCEFCB;
+  --color-primary: #a86523;
+  --color-accent: #e9a319;
+  --color-secondary: #fad59a;
+  --color-highlight: #f9d923;
+  --color-background: #fcefcb;
   --color-text: #4a4a4b;
   --color-muted: #515152;
 }
