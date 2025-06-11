@@ -5,6 +5,7 @@ type AuthContextType = {
   isAuthenticated: boolean;
   role: string | null;
   loading: boolean;
+  email: string | null;
   login: (email: string, password: string) => void;
   logout: () => void;
 };
@@ -17,6 +18,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [role, setRole] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
+  const [email, setEmail] = useState<string | null>(null);
 
   //Define checkAuth within the context
   const checkAuth = async () => {
@@ -26,9 +28,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       const status = await checkAuthStatus();
       setIsAuthenticated(true);
       setRole(status.role);
+      setEmail(status.email)
     } catch (error) {
       setIsAuthenticated(false);
       setRole(null);
+      setEmail(null);
       console.error("Auth check failed:", error);
     } finally {
       setLoading(false);
@@ -36,17 +40,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   useEffect(() => {
-    // const authCheckPerformed = localStorage.getItem("authCheckPerformed");
-    // if (!authCheckPerformed) {
-    //   checkAuth();
-    //   localStorage.setItem("authCheckPerformed", "true");
-    // } else {
-    //   setLoading(false);
-    // }
-
-    // return () => {
-    //   localStorage.removeItem("authCheckPerformed");
-    // }
     checkAuth();
   }, []);
 
@@ -58,6 +51,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     } catch (error: any) {
       setIsAuthenticated(false);
       setRole(null);
+      setEmail(null)
       throw error;
     } finally {
       setLoading(false);
@@ -69,6 +63,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       await logoutUser();
       setIsAuthenticated(false);
       setRole(null);
+      setEmail(null)
     } catch (error: any) {
       console.log("Failed to log out", error);
     }
@@ -76,7 +71,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
   return (
     <AuthContext.Provider
-      value={{ isAuthenticated, role, login, logout, loading }}
+      value={{ isAuthenticated, role, email, login, logout, loading }}
     >
       {children}
     </AuthContext.Provider>
