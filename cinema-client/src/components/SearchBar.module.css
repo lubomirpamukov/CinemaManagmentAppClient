@@ -1,0 +1,47 @@
+@import '../styles/variables.css';
+
+.searchBar {
+  display: flex;
+  width: 100%;
+  position: relative;
+}
+
+.searchInput {
+  width: 100%;
+  padding: 0.8rem 1.2rem;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: var(--color-text);
+  background-color: var(--color-background);
+  border: 1px solid var(--color-secondary);
+  border-radius: 25px;
+  outline: none;
+  transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  appearance: none;
+}
+
+.searchInput::placeholder {
+  color: var(--color-muted);
+  opacity: 1;
+}
+
+.searchInput:focus {
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px rgba(233, 163, 25, 0.25);
+}
+
+
+@media (max-width: 768px) {
+  .searchInput {
+    padding: 0.7rem 1rem;
+    font-size: 0.95rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .searchInput {
+    padding: 0.6rem 0.9rem;
+    font-size: 0.9rem;
+    border-radius: 20px;
+  }
+}
