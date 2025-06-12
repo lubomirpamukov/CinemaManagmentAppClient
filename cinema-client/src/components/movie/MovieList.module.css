@@ -1,0 +1,41 @@
+@import '../../styles/variables.css';
+
+.movieList {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 2rem;
+  padding: 2rem 1rem;
+  background-color: var(--color-background);
+}
+
+.loadingContainer,
+.emptyMessage {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 300px;
+  font-size: 1.5rem;
+  color: var(--color-text);
+  background-color: var(--color-background);
+  padding: 2rem;
+  text-align: center;
+}
+
+@media (min-width: 600px) {
+  .movieList {
+    padding: 2rem;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  }
+}
+
+@media (min-width: 900px) {
+  .movieList {
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  }
+}
+
+@media (min-width: 1200px) {
+  .movieList {
+    gap: 2.5rem;
+  }
+}
