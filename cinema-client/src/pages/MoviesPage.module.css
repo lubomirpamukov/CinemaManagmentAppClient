@@ -1,0 +1,62 @@
+@import '../styles/variables.css';
+
+.moviePage {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: var(--color-background);
+}
+
+.moviePageHeader {
+  background-color: var(--color-primary);
+  color: var(--color-background);
+  padding: 2rem 1.5rem;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.moviePageHeader h1 {
+  margin: 0;
+  font-size: 2.5rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+
+.moviePageContent {
+  flex-grow: 1;
+  padding: 1.5rem;
+  max-width: 1400px;
+  width: 100%;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.searchBar {
+  width: 100%;
+  max-width: 700px;
+  margin: 0 auto 1rem auto;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .moviePageHeader {
+    padding: 1.5rem 1rem;
+  }
+
+  .moviePageHeader h1 {
+    font-size: 2rem;
+  }
+
+  .moviePageContent {
+    padding: 1rem;
+    gap: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .moviePageHeader h1 {
+    font-size: 1.75rem;
+  }
+}
