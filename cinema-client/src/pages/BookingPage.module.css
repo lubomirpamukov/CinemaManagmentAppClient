@@ -1,0 +1,59 @@
+@import "../styles/variables.css";
+
+.bookingContainer {
+  max-width: 900px;
+  margin: 2rem auto;
+  padding: 1.5rem;
+  background-color: var(--color-background);
+}
+
+.pageTitle {
+  text-align: center;
+  color: var(--color-primary);
+  margin-bottom: 1.5rem !important;
+}
+
+
+.contentBox {
+  margin-top: 1rem;
+}
+
+.resetButton {
+   background-color: var(--color-secondary) !important;
+  color: var(--color-text) !important;
+}
+
+.resetButton:hover {
+  background-color: var(--color-accent) !important;
+
+}
+
+.navButton {
+  background-color: var(--color-secondary) !important;
+  color: var(--color-text) !important;
+}
+
+.navButton:hover {
+  background-color: var(--color-accent) !important;
+}
+
+.navButton:disabled {
+  background-color: rgba(0, 0, 0, 0.12);
+  color: rgba(0, 0, 0, 0.26);
+}
+
+
+/* Change default (inactive) step icon color */
+.stepper .MuiStepIcon-root svg {
+  fill: var(--color-muted) !important;
+}
+
+/* Change active step icon color */
+.stepper .MuiStepIcon-root.Mui-active svg {
+  fill: var(--color-secondary) !important;
+}
+
+/* Change completed step icon color */
+.stepper .MuiStepIcon-root.Mui-completed svg {
+  fill: var(--color-secondary) !important;
+}
