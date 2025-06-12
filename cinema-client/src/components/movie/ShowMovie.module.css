@@ -1,0 +1,156 @@
+@import '../../styles/variables.css';
+
+.movieCard {
+  background-color: var(--color-background);
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1), 0 6px 20px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+  height: 100%;
+}
+
+.movieCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15), 0 12px 40px rgba(0, 0, 0, 0.15);
+}
+
+.imageContainer {
+  width: 100%;
+  padding-top: 150%; /* Aspect ratio 2:3 for movie posters */
+  position: relative;
+  background-color: var(--color-muted);
+}
+
+.movieImage {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.cardContent {
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  background-color: var(--color-secondary);
+}
+
+.movieTitle {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--color-text);
+  margin: 0 0 0.5rem 0;
+  line-height: 1.3;
+}
+
+.movieMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem 0.75rem;
+  font-size: 0.85rem;
+  color: var(--color-muted);
+  margin-bottom: 0.75rem;
+}
+
+.metaItem {
+  background-color: var(--color-background);
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  color: var(--color-text);
+}
+
+.movieDescription {
+  font-size: 0.95rem;
+  color: var(--color-text);
+  line-height: 1.5;
+  margin-bottom: 1rem;
+  flex-grow: 1;
+}
+
+.cardActions {
+  margin-top: auto;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.detailsButton {
+  background-color: var(--color-accent);
+  color: var(--color-background);
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  text-align: center;
+  transition: background-color 0.2s ease-in-out;
+  flex-grow: 1;
+}
+
+.detailsButton:hover {
+  background-color: var(--color-highlight);
+  color: var(--color-text);
+}
+
+
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.modalContent {
+  background: var(--color-background);
+  color: var(--color-text);
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+  padding: 1.5rem 1rem;
+  max-width: 95vw;
+  max-height: 90vh;
+  width: 100%;
+  overflow-y: auto;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.closeButton {
+  position: absolute;
+  top: 1rem;
+  right: 1.2rem;
+  background: none;
+  border: none;
+  font-size: 2rem;
+  color: var(--color-muted);
+  cursor: pointer;
+  z-index: 10;
+  transition: color 0.2s;
+}
+
+.closeButton:hover {
+  color: var(--color-accent);
+}
+
+@media (min-width: 600px) {
+  .modalContent {
+    padding: 2rem 2.5rem;
+    max-width: 600px;
+  }
+}
+
+@media (min-width: 900px) {
+  .modalContent {
+    max-width: 800px;
+    padding: 2.5rem 3rem;
+  }
+}
