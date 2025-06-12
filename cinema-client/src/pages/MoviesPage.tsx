@@ -7,36 +7,37 @@ import { movieSchema } from "../validations";
 import MovieList from "../components/movie/MovieList";
 import styles from "./MoviesPage.module.css";
 import SearchBar from "../components/SearchBar";
+import Spinner from "../components/Spinner";
 
 const MoviePage: React.FC = () => {
-    const [searchTerm, setSearchTerm] = useState<string>("");
-    const debouncedSearchTerm = useDebounce(searchTerm, 600);
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  const debouncedSearchTerm = useDebounce(searchTerm, 600);
 
-    const {
-        data: movies,
-        currentPage,
-        totalPages,
-        setCurrentPage,
-        loading,
-        error,
-        refresh,
-    } = usePaginated("/movies",
-        3,
-        z.array(movieSchema),
-        debouncedSearchTerm
-    );
+  const {
+    data: movies,
+    currentPage,
+    totalPages,
+    setCurrentPage,
+    loading,
+    error,
+    refresh,
+  } = usePaginated("/movies", 3, z.array(movieSchema), debouncedSearchTerm);
 
-    useSearch({ debouncedValue: debouncedSearchTerm, setCurrentPage });
+  useSearch({ debouncedValue: debouncedSearchTerm, setCurrentPage });
 
-    const handleSearchChange = (currentQuery: string) => {
-        setSearchTerm(currentQuery);
-    };
+  const handleSearchChange = (currentQuery: string) => {
+    setSearchTerm(currentQuery);
+  };
 
-    if (error) {
-        return <div>{error}</div>
-    }
+  if (loading) {
+    return <Spinner size="large" className={styles.fullscreen}/>;
+  }
 
-    return (
+  if (error) {
+    return <div>{error}</div>;
+  }
+
+  return (
     <section className={styles.moviePage}>
       <header className={styles.moviePageHeader}>
         <h1>Movies</h1>
@@ -56,6 +57,6 @@ const MoviePage: React.FC = () => {
       </main>
     </section>
   );
-}
+};
 
 export default MoviePage;

@@ -1,6 +1,7 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import { useAuth } from "../context/AuthContext";
+import Spinner from "../components/Spinner";
 import styles from "./LoginPage.module.css";
 
 type LoginFormInputs = {
@@ -26,12 +27,9 @@ const LoginPage: React.FC = () => {
     }
   };
 
-  if (loading)
-    return (
-      <div className={styles.container}>
-        <div className={styles.formCard}>Loading ...</div>
-      </div>
-    );
+  if (loading) {
+    return <Spinner size="large"/>
+  }
 
   if (isAuthenticated)
     return (
