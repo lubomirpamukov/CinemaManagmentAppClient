@@ -11,8 +11,9 @@ import type { TSeat } from "../validations/hall";
 import { makeStyles } from "@mui/styles";
 
 import styles from "./BookingPage.module.css";
+import SelectCityStep from "../components/booking/SelectCityStep";
 
-  const useStyles = makeStyles(() => ({
+const useStyles = makeStyles(() => ({
   stepper: {
     "& .MuiStepIcon-root": {
       color: "var(--color-muted)", // default (inactive)
@@ -86,36 +87,63 @@ const BookingPage: React.FC = () => {
   };
 
   const updateBookingData = (data: Partial<BookingData>) => {
-    setBookingData((prev) => ({...prev, ...data}));
-  }
+    setBookingData((prev) => ({ ...prev, ...data }));
+  };
 
   const getStepContent = (step: number) => {
     switch (step) {
-        case 0:
-            return <Typography>Step 1: City selection UI will go here.</Typography>;
-        case 1:
-            return <Typography>Step 2: Cinema Selection UI will go here.</Typography>;
-        case 2:
-            return <Typography>Step 3: Date & Number of Seats UI will go here.</Typography>;
-        case 3:
-            return <Typography>Step 4: Display Available Sessions UI will go here.</Typography>;
-        case 4: 
-            return <Typography>Step 5: Seat Picker and UI will go here.</Typography>;
-        case 5:
-            return <Typography>Step 6: Confirmation UI will go here.</Typography>;
-        default:
-            return <Typography>Unknown step UI will go here.</Typography>
+     case 0:
+  return (
+    <SelectCityStep
+      movieId={bookingData.movieId!}
+      selectedCity={bookingData.city!}
+      onSelect={city => updateBookingData({ city })}
+    />
+  );
+      case 1:
+        return (
+          <Typography>Step 2: Cinema Selection UI will go here.</Typography>
+        );
+      case 2:
+        return (
+          <Typography>
+            Step 3: Date & Number of Seats UI will go here.
+          </Typography>
+        );
+      case 3:
+        return (
+          <Typography>
+            Step 4: Display Available Sessions UI will go here.
+          </Typography>
+        );
+      case 4:
+        return (
+          <Typography>Step 5: Seat Picker and UI will go here.</Typography>
+        );
+      case 5:
+        return <Typography>Step 6: Confirmation UI will go here.</Typography>;
+      default:
+        return <Typography>Unknown step UI will go here.</Typography>;
     }
-  }
+  };
 
   const classes = useStyles();
 
   return (
     <Paper elevation={3} className={styles.bookingContainer}>
-      <Typography variant="h4" component="h1" gutterBottom className={styles.pageTitle}>
+      <Typography
+        variant="h4"
+        component="h1"
+        gutterBottom
+        className={styles.pageTitle}
+      >
         Book Your Tickets
       </Typography>
-      <Stepper activeStep={activeStep} alternativeLabel className={classes.stepper}>
+      <Stepper
+        activeStep={activeStep}
+        alternativeLabel
+        className={classes.stepper}
+      >
         {steps.map((label) => (
           <Step key={label}>
             <StepLabel>{label}</StepLabel>
@@ -126,19 +154,30 @@ const BookingPage: React.FC = () => {
         {activeStep === steps.length ? (
           <React.Fragment>
             <Typography sx={{ mt: 2, mb: 1 }}>
-              All steps completed - you&apos;re finished (or show booking summary)
+              All steps completed - you&apos;re finished (or show booking
+              summary)
             </Typography>
-            <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
-              <Box sx={{ flex: '1 1 auto' }} />
-              <Button onClick={handleReset} className={styles.resetButton}>Reset</Button>
+            <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
+              <Box sx={{ flex: "1 1 auto" }} />
+              <Button onClick={handleReset} className={styles.resetButton}>
+                Reset
+              </Button>
             </Box>
           </React.Fragment>
         ) : (
-         <React.Fragment>
-            <Box sx={{ mt: 2, mb: 2, p: 2, border: '1px dashed grey', borderRadius: '4px' }}>
+          <React.Fragment>
+            <Box
+              sx={{
+                mt: 2,
+                mb: 2,
+                p: 2,
+                border: "1px dashed grey",
+                borderRadius: "4px",
+              }}
+            >
               {getStepContent(activeStep)}
             </Box>
-            <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
+            <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
               <Button
                 variant="contained"
                 disabled={activeStep === 0}
@@ -147,13 +186,13 @@ const BookingPage: React.FC = () => {
               >
                 Back
               </Button>
-              <Box sx={{ flex: '1 1 auto' }} />
+              <Box sx={{ flex: "1 1 auto" }} />
               <Button
                 variant="contained"
                 onClick={handleNext}
                 className={styles.navButton}
               >
-                {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
+                {activeStep === steps.length - 1 ? "Finish" : "Next"}
               </Button>
             </Box>
           </React.Fragment>
