@@ -1,0 +1,39 @@
+.selectStyle {
+  width: 100%;
+  max-width: 400px;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  border: 2px solid var(--color-primary);
+  background: var(--color-background);
+  color: var(--color-text);
+  font-size: 1.1rem;
+  font-family: inherit;
+  margin: 1rem auto;
+  display: block;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  box-shadow: 0 2px 8px rgba(169, 101, 35, 0.05);
+}
+
+.selectStyle:focus {
+  outline: none;
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 2px var(--color-secondary);
+}
+
+.selectOptionStyle {
+  color: var(--color-primary);
+  background: var(--color-background);
+}
+
+.cityStyle {
+  color: var(--color-text);
+  background: var(--color-background);
+}
+
+@media (max-width: 600px) {
+  .selectStyle {
+    max-width: 100%;
+    font-size: 1rem;
+    padding: 0.6rem 0.8rem;
+  }
+}
