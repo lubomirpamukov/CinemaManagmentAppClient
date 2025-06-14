@@ -1,0 +1,201 @@
+.snacksSection {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 2px solid var(--color-secondary);
+}
+
+.mainLabel {
+  font-size: 1.3rem;
+  color: var(--color-primary);
+  margin-bottom: 1rem;
+  font-weight: 600;
+  display: block;
+  text-align: center;
+}
+
+.snacksGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.snackItem {
+  background-color: var(--color-background);
+  border: 1px solid var(--color-secondary);
+  border-radius: 12px;
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 0 4px 8px rgba(168, 101, 35, 0.08);
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.snackItem:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 12px rgba(168, 101, 35, 0.12);
+}
+
+.snackInfo {
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.snackName {
+  font-size: 1.2rem;
+  color: var(--color-primary);
+  margin-bottom: 0.4rem;
+  font-weight: 700;
+}
+
+.snackDescription {
+  font-size: 0.9rem;
+  color: var(--color-text);
+  margin-bottom: 0.75rem;
+  line-height: 1.5;
+  min-height: 40px;
+}
+
+.snackPrice {
+  font-size: 1.1rem;
+  color: var(--color-accent);
+  font-weight: bold;
+}
+
+.snackQuantityControl {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: auto;
+}
+
+.quantityButton {
+  background-color: var(--color-secondary);
+  color: var(--color-primary);
+  border: 1px solid var(--color-primary);
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  font-size: 1.3rem;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s, color 0.2s, border-color 0.2s;
+}
+
+.quantityButton:hover {
+  background-color: var(--color-primary);
+  color: var(--color-background);
+  border-color: var(--color-accent);
+}
+
+.quantityButton:active {
+  transform: scale(0.95);
+}
+
+.quantityInput {
+  width: 55px;
+  text-align: center;
+  font-size: 1rem;
+  font-weight: 500;
+  margin: 0 0.75rem;
+  padding: 0.4rem;
+  border: 1px solid var(--color-secondary);
+  border-radius: 6px;
+  color: var(--color-text);
+  background-color: var(--color-background);
+}
+
+.quantityInput::-webkit-outer-spin-button,
+.quantityInput::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.quantityInput:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px var(--color-highlight);
+}
+
+.totalSnacksCost {
+  margin-top: 2rem;
+  padding: 1.25rem;
+  background-color: var(--color-secondary);
+  border: 1px solid var(--color-primary);
+  border-radius: 8px;
+  text-align: center;
+  box-shadow: 0 2px 4px rgba(168, 101, 35, 0.05);
+}
+
+.totalSnacksCost h4 {
+  font-size: 1.3rem;
+  color: var(--color-primary);
+  margin: 0;
+  font-weight: 700;
+}
+
+.infoMessage {
+  width: 100%;
+  padding: 1rem 1.2rem;
+  margin: 1rem auto;
+  border-radius: 8px;
+  text-align: center;
+  font-size: 1rem;
+  background-color: var(--color-background);
+  color: var(--color-muted);
+  border: 1px dashed var(--color-secondary);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .mainLabel {
+    font-size: 1.2rem;
+  }
+  .snacksGrid {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1rem;
+  }
+  .snackName {
+    font-size: 1.1rem;
+  }
+  .snackDescription {
+    font-size: 0.85rem;
+  }
+  .snackPrice {
+    font-size: 1rem;
+  }
+  .totalSnacksCost h4 {
+    font-size: 1.2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .mainLabel {
+    font-size: 1.1rem;
+  }
+  .snacksGrid {
+    grid-template-columns: 1fr;
+  }
+  .snackItem {
+    padding: 1rem;
+  }
+  .quantityButton {
+    width: 30px;
+    height: 30px;
+    font-size: 1.1rem;
+  }
+  .quantityInput {
+    width: 45px;
+    font-size: 0.9rem;
+  }
+  .totalSnacksCost h4 {
+    font-size: 1.1rem;
+  }
+  .infoMessage {
+    font-size: 0.9rem;
+  }
+}
