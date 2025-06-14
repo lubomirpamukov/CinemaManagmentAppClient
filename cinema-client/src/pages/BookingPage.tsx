@@ -12,24 +12,26 @@ import { makeStyles } from "@mui/styles";
 
 import styles from "./BookingPage.module.css";
 import SelectCityStep from "../components/booking/SelectCityStep";
+import SelectCinemaAndSnacksStep, { type SelectedSnackInfo } from "../components/booking/SelectCinemaAndSnacksStep";
+
 
 const useStyles = makeStyles(() => ({
   stepper: {
     "& .MuiStepIcon-root": {
-      color: "var(--color-muted)", // default (inactive)
+      color: "var(--color-muted)",
     },
     "& .MuiStepIcon-root.Mui-active": {
-      color: "var(--color-secondary)", // active (gold)
+      color: "var(--color-secondary)",
     },
     "& .MuiStepIcon-root.Mui-completed": {
-      color: "var(--color-highlight)", // completed (gold)
+      color: "var(--color-highlight)",
     },
   },
 }));
 
 const steps = [
   "Select City",
-  "Select Cinema",
+  "Select Cinema & Snacks",
   "Select Date",
   "Available Sessions",
   "Pick Your Seats",
@@ -44,6 +46,7 @@ type BookingData = {
   numberOfSeats?: number;
   selectedSessionId?: string | null;
   selectedSeats?: TSeat[];
+  selectedSnacks?: Record<string, SelectedSnackInfo>; // Added selectedSnacks
 };
 
 const BookingPage: React.FC = () => {
@@ -56,14 +59,16 @@ const BookingPage: React.FC = () => {
     numberOfSeats: 1,
     selectedSessionId: null,
     selectedSeats: [],
+    selectedSnacks: {},
   });
 
-  const { movieId } = useParams();
+  const { movieId: routeMovieId } = useParams<{ movieId: string }>();
+
   useEffect(() => {
-    if (movieId) {
-      setBookingData((prev) => ({ ...prev, movieId }));
+    if (routeMovieId) {
+      setBookingData((prev) => ({ ...prev, movieId: routeMovieId }));
     }
-  }, [movieId]);
+  }, [routeMovieId]);
 
   const handleNext = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -76,13 +81,14 @@ const BookingPage: React.FC = () => {
   const handleReset = () => {
     setActiveStep(0);
     setBookingData({
-      movieId: bookingData.movieId,
+      movieId: bookingData.movieId, 
       city: null,
       cinemaId: null,
       date: null,
       numberOfSeats: 1,
       selectedSessionId: null,
       selectedSeats: [],
+      selectedSnacks: {},
     });
   };
 
@@ -92,17 +98,43 @@ const BookingPage: React.FC = () => {
 
   const getStepContent = (step: number) => {
     switch (step) {
-     case 0:
-  return (
-    <SelectCityStep
-      movieId={bookingData.movieId!}
-      selectedCity={bookingData.city!}
-      onSelect={city => updateBookingData({ city })}
-    />
-  );
+      case 0:
+        return (
+          <SelectCityStep
+            movieId={bookingData.movieId!}
+            selectedCity={bookingData.city!}
+            onSelect={(city) =>
+              updateBookingData({
+                city,
+                cinemaId: null,
+                selectedSnacks: {},
+                date: null,
+                selectedSessionId: null,
+                selectedSeats: [],
+              })
+            }
+          />
+        );
       case 1:
         return (
-          <Typography>Step 2: Cinema Selection UI will go here.</Typography>
+          <SelectCinemaAndSnacksStep
+            movieId={bookingData.movieId!}
+            city={bookingData.city!}
+            selectedCinemaId={bookingData.cinemaId!}
+            onCinemaSelect={(cinemaId) =>
+              updateBookingData({
+                cinemaId,
+                selectedSnacks: {},
+                date: null,
+                selectedSessionId: null,
+                selectedSeats: [],
+              })
+            }
+            selectedSnacks={bookingData.selectedSnacks || {}}
+            onSnacksUpdate={(updatedSnacks) =>
+              updateBookingData({ selectedSnacks: updatedSnacks })
+            }
+          />
         );
       case 2:
         return (
@@ -171,7 +203,7 @@ const BookingPage: React.FC = () => {
                 mt: 2,
                 mb: 2,
                 p: 2,
-                border: "1px dashed grey",
+                // border: "1px dashed grey", // You can keep or remove this styling
                 borderRadius: "4px",
               }}
             >
@@ -191,6 +223,9 @@ const BookingPage: React.FC = () => {
                 variant="contained"
                 onClick={handleNext}
                 className={styles.navButton}
+                // Add logic to disable Next if required fields for the current step are not filled
+                // e.g. disabled={activeStep === 0 && !bookingData.city}
+                // e.g. disabled={activeStep === 1 && !bookingData.cinemaId}
               >
                 {activeStep === steps.length - 1 ? "Finish" : "Next"}
               </Button>
