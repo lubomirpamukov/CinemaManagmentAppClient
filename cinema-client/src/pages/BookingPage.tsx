@@ -9,11 +9,13 @@ import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
 import type { TSeat } from "../validations/hall";
 import { makeStyles } from "@mui/styles";
+import SelecDateAndSeatQuantity from "../components/booking/SelectDateAndSeatQuantity";
 
 import styles from "./BookingPage.module.css";
 import SelectCityStep from "../components/booking/SelectCityStep";
-import SelectCinemaAndSnacksStep, { type SelectedSnackInfo } from "../components/booking/SelectCinemaAndSnacksStep";
-
+import SelectCinemaAndSnacksStep, {
+  type SelectedSnackInfo,
+} from "../components/booking/SelectCinemaAndSnacksStep";
 
 const useStyles = makeStyles(() => ({
   stepper: {
@@ -81,7 +83,7 @@ const BookingPage: React.FC = () => {
   const handleReset = () => {
     setActiveStep(0);
     setBookingData({
-      movieId: bookingData.movieId, 
+      movieId: bookingData.movieId,
       city: null,
       cinemaId: null,
       date: null,
@@ -138,9 +140,22 @@ const BookingPage: React.FC = () => {
         );
       case 2:
         return (
-          <Typography>
-            Step 3: Date & Number of Seats UI will go here.
-          </Typography>
+          <SelecDateAndSeatQuantity 
+            movieId={bookingData.movieId!}
+            cinemaId={bookingData.cinemaId!}
+            selectedDate={bookingData.date!}
+            numberOfSeats={bookingData.numberOfSeats || 1}
+            onDateChange={(date) => 
+              updateBookingData({date,selectedSessionId: null, selectedSeats: []})
+            }
+            onSeatsChange={(seats) =>
+              updateBookingData({
+                numberOfSeats: seats,
+                selectedSessionId: null,
+                selectedSeats: []
+              })
+            }
+          />
         );
       case 3:
         return (

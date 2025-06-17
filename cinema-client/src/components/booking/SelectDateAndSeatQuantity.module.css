@@ -1,0 +1,140 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+  padding: 1.5rem;
+  align-items: center;
+  width: 100%;
+  max-width: 40rem;
+  margin: 0 auto; 
+  background-color: var(--color-background); 
+  border-radius: 12px;
+  box-shadow: 0 6px 12px rgba(168, 101, 35, 0.08);
+}
+
+.dateSection,
+.seatsSection {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  width: 100%;
+}
+
+.label {
+  font-size: 1.15rem; 
+  color: var(--color-primary);
+  margin-bottom: 0.25rem;
+  font-weight: 600;
+  text-align: left;
+}
+
+.dateInputMui .MuiInputBase-root {
+  background-color: #fff;
+  border-radius: 8px;
+}
+.dateInputMui .MuiOutlinedInput-notchedOutline {
+  border-color: var(--color-secondary);
+}
+.dateInputMui:hover .MuiOutlinedInput-notchedOutline {
+  border-color: var(--color-primary);
+}
+.dateInputMui .Mui-focused .MuiOutlinedInput-notchedOutline {
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 2px var(--color-highlight);
+}
+.dateInputMui .MuiInputLabel-root { 
+  color: var(--color-muted);
+}
+.dateInputMui .MuiInputLabel-root.Mui-focused {
+  color: var(--color-accent);
+}
+.dateInputMui .MuiFormHelperText-root {
+  color: var(--color-muted);
+  margin-left: 0;
+}
+
+
+.seatsInputMui .MuiInputBase-root {
+  background-color: var(--color-background);
+  border-radius: 8px;
+}
+.seatsInputMui .MuiOutlinedInput-notchedOutline {
+  border-color: var(--color-secondary);
+}
+.seatsInputMui:hover .MuiOutlinedInput-notchedOutline {
+  border-color: var(--color-primary);
+}
+.seatsInputMui .Mui-focused .MuiOutlinedInput-notchedOutline {
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 2px var(--color-highlight);
+}
+.seatsInputMui input[type="number"] { 
+  text-align: center;
+  font-weight: 500;
+  color: var(--color-text);
+}
+
+.seatsInputMui input[type="number"] {
+  -moz-appearance: textfield;
+  -moz-appearance: none; 
+  appearance: none;  
+}
+.seatsInputMui input::-webkit-outer-spin-button,
+.seatsInputMui input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+
+.infoMessage,
+.errorMessage {
+  width: 100%;
+  padding: 1rem 1.5rem;
+  margin: 1rem auto;
+  border-radius: 8px;
+  text-align: center;
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.infoMessage {
+  background-color: var(--color-secondary);
+  color: var(--color-primary);
+  border: 1px solid var(--color-accent);
+}
+
+.errorMessage { 
+  background-color: var(--color-error-background);
+  color: var(--color-error-text);
+  border: 1px solid var(--color-error-border);
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 1.25rem;
+    gap: 2rem;
+  }
+  .label {
+    font-size: 1.1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 1rem;
+    gap: 1.5rem;
+    border-radius: 8px;
+  }
+  .label {
+    font-size: 1rem;
+  }
+  .dateInputMui .MuiInputLabel-root,
+  .seatsInputMui .MuiInputLabel-root {
+    font-size: 0.95rem;
+  }
+  .infoMessage,
+  .errorMessage {
+    font-size: 0.9rem;
+    padding: 0.8rem 1.2rem;
+  }
+}
