@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { z } from "zod";
 
 import { useSearch, usePaginated, useDebounce } from "../hooks";
@@ -13,6 +13,16 @@ const MoviePage: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const debouncedSearchTerm = useDebounce(searchTerm, 600);
 
+  const moveiFilters = useMemo(() => {
+    const filters: Record<string, string | number | boolean | undefined> = {};
+    if (debouncedSearchTerm) {
+      filters.search = debouncedSearchTerm;
+    };
+    return filters
+  }, [debouncedSearchTerm])
+
+  const paginatedMovieSchema = useMemo(() => z.array(movieSchema), []);
+
   const {
     data: movies,
     currentPage,
@@ -21,9 +31,10 @@ const MoviePage: React.FC = () => {
     loading,
     error,
     refresh,
-  } = usePaginated("/movies", 3, z.array(movieSchema), debouncedSearchTerm);
+  } = usePaginated("/movies", 3, paginatedMovieSchema, moveiFilters);
 
   useSearch({ debouncedValue: debouncedSearchTerm, setCurrentPage });
+
 
   const handleSearchChange = (currentQuery: string) => {
     setSearchTerm(currentQuery);
@@ -44,7 +55,7 @@ const MoviePage: React.FC = () => {
       </header>
       <main className={styles.moviePageContent}>
         <SearchBar
-          onSearch={(e) => handleSearchChange(e)}
+          onSearch={handleSearchChange}
           placeholder="Title, director, genre"
           className={styles.searchBar}
         />
