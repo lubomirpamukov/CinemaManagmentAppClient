@@ -15,4 +15,9 @@
   --color-background: #fcefcb;
   --color-text: #4a4a4b;
   --color-muted: #515152;
+
+  /* Error Colors */
+  --color-error-text: #B71C1C; /* A strong, deep red for error text and borders */
+  --color-error-background: #FFEBEE; /* A light pink/red for error message backgrounds */
+  --color-error-border: #D32F2F; /* A slightly less deep red, good for borders or icons */
 }
