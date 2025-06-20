@@ -16,6 +16,8 @@ import SelectCityStep from "../components/booking/SelectCityStep";
 import SelectCinemaAndSnacksStep, {
   type SelectedSnackInfo,
 } from "../components/booking/SelectCinemaAndSnacksStep";
+import SelectSessionStep from "../components/booking/SelectSessionStep";
+import SelectSeatsStep from "../components/booking/SelectSeatsStep";
 
 const useStyles = makeStyles(() => ({
   stepper: {
@@ -60,7 +62,7 @@ const BookingPage: React.FC = () => {
     date: null,
     numberOfSeats: 1,
     selectedSessionId: null,
-    selectedSeats: [],
+    selectedSeats: [], // Will store TSeat objects
     selectedSnacks: {},
   });
 
@@ -93,7 +95,6 @@ const BookingPage: React.FC = () => {
       selectedSnacks: {},
     });
   };
-
   const updateBookingData = (data: Partial<BookingData>) => {
     setBookingData((prev) => ({ ...prev, ...data }));
   };
@@ -140,32 +141,63 @@ const BookingPage: React.FC = () => {
         );
       case 2:
         return (
-          <SelecDateAndSeatQuantity 
+          <SelecDateAndSeatQuantity
             movieId={bookingData.movieId!}
             cinemaId={bookingData.cinemaId!}
             selectedDate={bookingData.date!}
             numberOfSeats={bookingData.numberOfSeats || 1}
-            onDateChange={(date) => 
-              updateBookingData({date,selectedSessionId: null, selectedSeats: []})
+            onDateChange={(date) =>
+              updateBookingData({
+                date,
+                selectedSessionId: null,
+                selectedSeats: [],
+              })
             }
             onSeatsChange={(seats) =>
               updateBookingData({
                 numberOfSeats: seats,
                 selectedSessionId: null,
-                selectedSeats: []
+                selectedSeats: [],
               })
             }
           />
         );
       case 3:
         return (
-          <Typography>
-            Step 4: Display Available Sessions UI will go here.
-          </Typography>
+          <SelectSessionStep
+            movieId={bookingData.movieId}
+            cinemaId={bookingData.cinemaId}
+            date={bookingData.date}
+            numberOfSeats={bookingData.numberOfSeats}
+            selectedSessionId={bookingData.selectedSessionId}
+            onSessionSelect={(sessionId) =>
+              updateBookingData({
+                selectedSessionId: sessionId,
+                selectedSeats: [],
+              })
+            }
+          />
         );
       case 4:
         return (
-          <Typography>Step 5: Seat Picker and UI will go here.</Typography>
+          <SelectSeatsStep
+            sessionId={bookingData.selectedSessionId!}
+            selectedSeats={(bookingData.selectedSeats || []).map(seat => seat._id as string)}
+            onSeatSelect={(seat) => {
+              const updatedData = ((prev: BookingData) => {
+                const alreadySelected = prev.selectedSeats?.some(
+                  (s) => s._id === seat._id
+                );
+                return {
+                  selectedSeats: alreadySelected
+                    ? prev.selectedSeats?.filter((s) => s._id !== seat._id)
+                    : [...(prev.selectedSeats || []), seat],
+                };
+              })(bookingData);
+              
+              updateBookingData(updatedData);
+            }}
+          />
         );
       case 5:
         return <Typography>Step 6: Confirmation UI will go here.</Typography>;

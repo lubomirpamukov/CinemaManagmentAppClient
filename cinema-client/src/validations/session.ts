@@ -19,3 +19,22 @@ export const sessionSchema = z.object({
 });
 
 export type TSession = z.infer<typeof sessionSchema>;
+
+// Create specific schema for session display objects
+export const sessionDisplaySchema = z.object({
+    _id: z.string(),
+    cinemaId: z.string(),
+    cinemaName: z.string(),
+    hallId: z.string(),
+    hallName: z.string(),
+    movieId: z.string(),
+    movieName: z.string(),
+    date: z.string(),
+    startTime: z.string(),
+    endTime: z.string(),
+    availableSeats: z.number()
+});
+
+export type TSessionDisplay = z.infer<typeof sessionDisplaySchema>;
+
+export const mongooseObjectIdValidationRegex = z.string().length(24).regex(/^[a-f\d]{24}$/i);

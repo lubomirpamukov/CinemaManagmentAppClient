@@ -13,7 +13,7 @@ export const HallValidation = {
 
 //schemas
 export const seatsSchema = z.object({
-  originalSeatId: z.string().optional(),
+  _id: z.string().optional(),
   row: z.number(),
   column: z.number(),
   seatNumber: z.string().min(1, HallValidation.seatName).max(10, HallValidation.seatName),
