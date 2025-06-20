@@ -1,0 +1,132 @@
+.sessionsContainer {
+  padding: 1.5em;
+  background-color: var(--color-background);
+  border-radius: 8px;
+  color: var(--color-text);
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.stepTitle {
+  text-align: center;
+  margin-bottom: 1.5em;
+  font-size: 1.5rem;
+  color: var(--color-primary);
+}
+
+.statusContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  text-align: center;
+  min-height: 200px;
+}
+
+.statusContainer p {
+  margin-top: 1em;
+  font-size: 1.1rem;
+}
+
+.errorContainer {
+  background-color: var(--color-error-background);
+  color: var(--color-error-text);
+  border: 1px solid var(--color-error-border);
+  border-radius: 0.5em;
+  padding: 1.2em;
+}
+
+.errorContainer p {
+    color: var(--color-error-text);
+}
+
+.sessionsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 1em;
+}
+
+.sessionItem {
+  background-color: #fff; 
+  border: 2px solid var(--color-muted);
+  border-radius: 8px;
+  padding: 1em;
+  text-align: center;
+  cursor: pointer;
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out, border-color 0.2s ease-in-out;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 15em;
+  color: var(--color-text);
+  font-family: inherit; 
+}
+
+.sessionItem:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-color: var(--color-primary);
+}
+
+.sessionItem:focus, .sessionItem:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+
+.sessionItem.selected {
+  border-color: var(--color-accent);
+  background-color: var(--color-secondary);
+  color: var(--color-text);
+  box-shadow: 0 0 0 3px var(--color-accent);
+}
+
+.sessionTime {
+  font-size: 1.4rem;
+  font-weight: bold;
+  color: var(--color-primary);
+  margin-bottom: 8px;
+}
+
+.sessionItem.selected .sessionTime {
+    color: var(--color-text);
+}
+
+.sessionHall {
+  font-size: 0.9rem;
+  color: var(--color-muted);
+  margin-bottom: 0.3em;
+}
+
+.sessionFormat {
+  font-size: 0.8rem;
+  background-color: var(--color-highlight);
+  color: var(--color-text);
+  padding: 0.1em 0.5em;
+  border-radius: 4px;
+  display: inline-block;
+  margin-top: 0.3em;
+  font-weight: 500;
+}
+
+@media (max-width: 600px) {
+  .sessionsGrid {
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 10px;
+  }
+
+  .sessionItem {
+    padding: 10px;
+    min-height: 80px;
+  }
+
+  .sessionTime {
+    font-size: 1.2rem;
+  }
+
+  .stepTitle {
+    font-size: 1.3rem;
+  }
+}
