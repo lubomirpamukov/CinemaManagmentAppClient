@@ -1,5 +1,11 @@
 import type { PaginatedResponse } from "../hooks";
-import { mongooseObjectIdValidationRegex, seatsSchema, type TCinema, type TSeat, type TSessionDisplay } from "../validations";
+import {
+  mongooseObjectIdValidationRegex,
+  seatsSchema,
+  type TCinema,
+  type THallSeat,
+  type TSessionDisplay,
+} from "../validations";
 import { fetchWithFilters } from "./fetchWithFilters";
 
 const BASE_URL = "http://localhost:3123";
@@ -91,22 +97,27 @@ export type SessionSeatLayout = {
     rows: number;
     columns: number;
   };
-  seats: TSeat[]
-}
+  seats: THallSeat[];
+};
 
 export const fetchSessionSeatLayout = async (
-  sessionId:string
+  sessionId: string
 ): Promise<SessionSeatLayout> => {
-  if(!mongooseObjectIdValidationRegex.parse(sessionId)) throw new Error ("Invalid Session ID format.");
+  if (!mongooseObjectIdValidationRegex.parse(sessionId))
+    throw new Error("Invalid Session ID format.");
 
-  const sessionSeatLayout = await fetch(`${BASE_URL}/session/${sessionId}/seat-layout`, {
-    method: "GET",
-    credentials: "include"
-  })
+  const sessionSeatLayout = await fetch(
+    `${BASE_URL}/session/${sessionId}/seat-layout`,
+    {
+      method: "GET",
+      credentials: "include",
+    }
+  );
 
-  if (!sessionSeatLayout.ok) throw new Error(`Failed to fetch seat layout: ${sessionSeatLayout.status}`);
+  if (!sessionSeatLayout.ok)
+    throw new Error(`Failed to fetch seat layout: ${sessionSeatLayout.status}`);
   const data: SessionSeatLayout = await sessionSeatLayout.json();
 
   seatsSchema.array().parse(data.seats);
-  return data
-}
+  return data;
+};
