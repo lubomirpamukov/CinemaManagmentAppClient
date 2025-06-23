@@ -40,7 +40,7 @@ export const logoutUser = async (): Promise<void> => {
 };
 
 //this function checks for the role of the loged in person
-export const checkAuthStatus = async (): Promise<{ role: string, email:string }> => {
+export const checkAuthStatus = async (): Promise<{ role: string, email:string, id: string }> => {
   const status = await fetch(`${BASE_URL}/check-auth`, {
     method: "GET",
     credentials: "include",
