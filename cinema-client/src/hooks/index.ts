@@ -6,3 +6,4 @@ export * from "./useMovieCinemas";
 export * from "./useAvailableDates";
 export * from "./useFilteredSessions";
 export * from "./useSessionSeatLayout";
+export * from "./useUserReservations";

@@ -4,3 +4,4 @@ export * from "./fetchWithFilters";
 export * from "./cinemaService";
 export * from "./sessionService";
 export * from "./movieService";
+export * from "./reservationService";
