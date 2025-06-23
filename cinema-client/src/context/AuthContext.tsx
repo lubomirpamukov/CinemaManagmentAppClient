@@ -6,6 +6,7 @@ type AuthContextType = {
   role: string | null;
   loading: boolean;
   email: string | null;
+  userId: string | null;
   login: (email: string, password: string) => void;
   logout: () => void;
 };
@@ -17,6 +18,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 }) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [role, setRole] = useState<string | null>(null);
+  const [userId, setUserId] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [email, setEmail] = useState<string | null>(null);
 
@@ -29,6 +31,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       setIsAuthenticated(true);
       setRole(status.role);
       setEmail(status.email)
+      setUserId(status.id)
     } catch (error) {
       setIsAuthenticated(false);
       setRole(null);
@@ -71,7 +74,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
   return (
     <AuthContext.Provider
-      value={{ isAuthenticated, role, email, login, logout, loading }}
+      value={{ isAuthenticated, role, email, userId, login, logout, loading }}
     >
       {children}
     </AuthContext.Provider>
