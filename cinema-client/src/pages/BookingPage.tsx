@@ -7,7 +7,7 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
-import type { TSeat } from "../validations/hall";
+import type { THallSeat, TCreateReservation } from "../validations";
 import { makeStyles } from "@mui/styles";
 import SelecDateAndSeatQuantity from "../components/booking/SelectDateAndSeatQuantity";
 
@@ -18,6 +18,10 @@ import SelectCinemaAndSnacksStep, {
 } from "../components/booking/SelectCinemaAndSnacksStep";
 import SelectSessionStep from "../components/booking/SelectSessionStep";
 import SelectSeatsStep from "../components/booking/SelectSeatsStep";
+import ConfirmReservation from "../components/booking/ConfirmReservationStep";
+import { useMovieDetails } from "../hooks/useMovieDetails";
+import { useAuth } from "../context/AuthContext";
+import { createReservation } from "../services/reservationService";
 
 const useStyles = makeStyles(() => ({
   stepper: {
@@ -44,12 +48,17 @@ const steps = [
 
 type BookingData = {
   movieId?: string | null;
+  userId?: string | null;
+  movieName?: string | null;
   city?: string | null;
   cinemaId?: string | null;
+  cinemaName?: string | null;
+  hallName?: string | null;
   date?: Date | null;
+  sessionTime?: string | null;
   numberOfSeats?: number;
   selectedSessionId?: string | null;
-  selectedSeats?: TSeat[];
+  selectedSeats?: THallSeat[];
   selectedSnacks?: Record<string, SelectedSnackInfo>; // Added selectedSnacks
 };
 
@@ -66,7 +75,20 @@ const BookingPage: React.FC = () => {
     selectedSnacks: {},
   });
 
+  const { userId } = useAuth();
   const { movieId: routeMovieId } = useParams<{ movieId: string }>();
+  const { movie } = useMovieDetails(bookingData.movieId);
+  useEffect(() => {
+    if (movie && movie.title && bookingData.movieName !== movie.title) {
+      setBookingData((prev) => ({ ...prev, movieName: movie.title }));
+    }
+  }, [movie]);
+
+  useEffect(() => {
+    if (userId) {
+      setBookingData((prev) => ({ ...prev, userId: userId }));
+    }
+  }, [userId]);
 
   useEffect(() => {
     if (routeMovieId) {
@@ -86,6 +108,7 @@ const BookingPage: React.FC = () => {
     setActiveStep(0);
     setBookingData({
       movieId: bookingData.movieId,
+      movieName: bookingData.movieName,
       city: null,
       cinemaId: null,
       date: null,
@@ -124,9 +147,10 @@ const BookingPage: React.FC = () => {
             movieId={bookingData.movieId!}
             city={bookingData.city!}
             selectedCinemaId={bookingData.cinemaId!}
-            onCinemaSelect={(cinemaId) =>
+            onCinemaSelect={(cinemaId, cinemaName) =>
               updateBookingData({
                 cinemaId,
+                cinemaName,
                 selectedSnacks: {},
                 date: null,
                 selectedSessionId: null,
@@ -170,9 +194,11 @@ const BookingPage: React.FC = () => {
             date={bookingData.date}
             numberOfSeats={bookingData.numberOfSeats}
             selectedSessionId={bookingData.selectedSessionId}
-            onSessionSelect={(sessionId) =>
+            onSessionSelect={(sessionId, hallName, startTime) =>
               updateBookingData({
                 selectedSessionId: sessionId,
+                hallName,
+                sessionTime: startTime,
                 selectedSeats: [],
               })
             }
@@ -182,7 +208,9 @@ const BookingPage: React.FC = () => {
         return (
           <SelectSeatsStep
             sessionId={bookingData.selectedSessionId!}
-            selectedSeats={(bookingData.selectedSeats || []).map(seat => seat._id as string)}
+            selectedSeats={(bookingData.selectedSeats || []).map(
+              (seat) => seat._id as string
+            )}
             onSeatSelect={(seat) => {
               const updatedData = ((prev: BookingData) => {
                 const alreadySelected = prev.selectedSeats?.some(
@@ -194,20 +222,63 @@ const BookingPage: React.FC = () => {
                     : [...(prev.selectedSeats || []), seat],
                 };
               })(bookingData);
-              
+
               updateBookingData(updatedData);
             }}
           />
         );
       case 5:
-        return <Typography>Step 6: Confirmation UI will go here.</Typography>;
+        return (
+          <ConfirmReservation
+            movieName={bookingData.movieName!}
+            cinemaName={bookingData.cinemaName || "Generic Cinema"}
+            hallName={bookingData.hallName || "Main Hall"}
+            date={bookingData.date}
+            sessionTime={bookingData.sessionTime || "time undefined"}
+            selectedSeats={bookingData.selectedSeats || []}
+            selectedSnacks={bookingData.selectedSnacks || {}}
+            totalTicketPrice={(bookingData.selectedSeats || []).reduce(
+              (sum, seat) => sum + seat.price,
+              0
+            )}
+            onConfirm={async () => {
+              const snackQuantities: Record<string, number> =
+                Object.fromEntries(
+                  Object.entries(bookingData.selectedSnacks ?? {}).map(
+                    ([id, snackInfo]) => [id, snackInfo.quantity]
+                  )
+                );
+
+              const reservationPayload: TCreateReservation = {
+                userId: bookingData.userId!,
+                sessionId: bookingData.selectedSessionId!,
+                status: "pending",
+                seats: (bookingData.selectedSeats || []).map((seat) => ({
+                  originalSeatId: seat._id!,
+                })),
+                purchasedSnacks: snackQuantities,
+              };
+
+              console.log(reservationPayload)
+
+              try {
+                const response = await createReservation(reservationPayload);
+                // Handle success (show message, go to next step, etc.)
+                console.log("Reservation created:", response);
+              } catch (error) {
+                // Handle error (show error message)
+                console.error("Reservation failed:", error);
+              }
+            }}
+          />
+        );
+
       default:
         return <Typography>Unknown step UI will go here.</Typography>;
     }
   };
 
   const classes = useStyles();
-
   return (
     <Paper elevation={3} className={styles.bookingContainer}>
       <Typography
@@ -271,8 +342,16 @@ const BookingPage: React.FC = () => {
                 onClick={handleNext}
                 className={styles.navButton}
                 // Add logic to disable Next if required fields for the current step are not filled
-                // e.g. disabled={activeStep === 0 && !bookingData.city}
-                // e.g. disabled={activeStep === 1 && !bookingData.cinemaId}
+                disabled={
+                  (activeStep === 0 && !bookingData.city) ||
+                  (activeStep === 1 && !bookingData.cinemaId) ||
+                  (activeStep === 2 &&
+                    (!bookingData.date || !bookingData.numberOfSeats)) ||
+                  (activeStep === 3 && !bookingData.selectedSessionId) ||
+                  (activeStep === 4 &&
+                    (!bookingData.selectedSeats ||
+                      bookingData.selectedSeats.length === 0))
+                }
               >
                 {activeStep === steps.length - 1 ? "Finish" : "Next"}
               </Button>
