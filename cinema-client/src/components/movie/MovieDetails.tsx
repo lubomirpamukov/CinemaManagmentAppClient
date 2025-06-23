@@ -1,10 +1,10 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./MovieDetails.module.css";
-import type { Movie } from "../../validations";
+import type { TMovie } from "../../validations";
 
 type MovieDetailsProps = {
-  movie: Movie;
+  movie: TMovie;
 };
 
 const MovieDetails: React.FC<MovieDetailsProps> = ({ movie }) => {

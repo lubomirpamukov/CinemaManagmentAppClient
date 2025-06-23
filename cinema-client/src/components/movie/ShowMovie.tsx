@@ -2,10 +2,10 @@ import React, { useState } from "react";
 import MovieDetails from "./MovieDetails";
 import Modal from "react-modal";
 import styles from "./ShowMovie.module.css";
-import type { Movie } from "../../validations/movie";
+import type { TMovie } from "../../validations/movie";
 
 type ShowMovieProps = {
-  movie: Movie;
+  movie: TMovie;
   onRefresh?: () => void;
 };
 

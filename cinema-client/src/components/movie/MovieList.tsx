@@ -2,11 +2,11 @@ import React from "react";
 
 import ShowMovie from "./ShowMovie";
 import styles from "./MovieList.module.css";
-import type { Movie } from "../../validations";
+import type { TMovie } from "../../validations";
 // to do import spinner;
 
 type MovieListProps = {
-  movies: Movie[];
+  movies: TMovie[];
   loading: boolean;
   refresh: () => void;
 };

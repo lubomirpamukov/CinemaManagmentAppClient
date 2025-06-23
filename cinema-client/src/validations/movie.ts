@@ -66,4 +66,4 @@ export const movieSchema = z.object({
     .or(z.literal("").transform(() => undefined)),
 });
 
-export type Movie = z.infer<typeof movieSchema>;
+export type TMovie = z.infer<typeof movieSchema>;

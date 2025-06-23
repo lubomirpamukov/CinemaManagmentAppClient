@@ -12,7 +12,11 @@ type SelectSessionStepProps = {
   date?: Date | null;
   numberOfSeats?: number;
   selectedSessionId?: string | null;
-  onSessionSelect: (sessionId: string) => void;
+  onSessionSelect: (
+    sessionId: string,
+    hallName: string,
+    startTime: string
+  ) => void;
 };
 
 const SelectSessionStep: React.FC<SelectSessionStepProps> = ({
@@ -78,7 +82,13 @@ const SelectSessionStep: React.FC<SelectSessionStepProps> = ({
             className={`${styles.sessionItem} ${
               selectedSessionId === session._id ? styles.selected : ""
             }`}
-            onClick={() => onSessionSelect(session._id!)}
+            onClick={() =>
+              onSessionSelect(
+                session._id!,
+                session.hallName || "Main Hall",
+                session.startTime
+              )
+            }
             aria-pressed={selectedSessionId === session._id}
           >
             <div className={styles.sessionTime}>{session.startTime}</div>

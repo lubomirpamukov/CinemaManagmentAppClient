@@ -1,12 +1,12 @@
 import React from "react";
 import { useSessionSeatLayout } from "../../hooks";
 import styles from "./SelectSeatsStep.module.css";
-import type { TSeat } from "../../validations";
+import type { THallSeat } from "../../validations";
 import Spinner from "../Spinner";
 
 type Props = {
   sessionId: string;
-  onSeatSelect?: (seat: TSeat) => void;
+  onSeatSelect?: (seat: THallSeat) => void;
   selectedSeats?: string[];
 };
 
@@ -24,7 +24,7 @@ const SelectSeatsStep: React.FC<Props> = ({
   const { hallLayout, seats, hallName } = layout;
 
   //Create 2D grid
-  const grid: (TSeat | null)[][] = Array.from(
+  const grid: (THallSeat | null)[][] = Array.from(
     { length: hallLayout.rows },
     (_, rowIdx) =>
       Array.from(

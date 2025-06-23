@@ -113,12 +113,12 @@ const SelecDateAndSeatQuantity: React.FC<SelectDateAndSeatQuantitiyProps> = ({
         </div>
 
         <div className={styles.seatsSection}>
-          <label htmlFor="number-of-seats" className={styles.label}>
-            Number of Seats:
+          <label htmlFor="number-of-tickets" className={styles.label}>
+            Number of Tickets:
           </label>
           <TextField
             type="number"
-            id="number-of-seats"
+            id="number-of-tickets"
             value={numberOfSeats}
             onChange={(e) => {
               const seats = parseInt(e.target.value, 10);
