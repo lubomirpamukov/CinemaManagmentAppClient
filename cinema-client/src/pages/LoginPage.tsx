@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { useAuth } from "../context/AuthContext";
 import Spinner from "../components/Spinner";
@@ -10,14 +11,14 @@ type LoginFormInputs = {
 };
 
 const LoginPage: React.FC = () => {
-  const { login, loading, isAuthenticated, role } = useAuth();
+  const { login, loading, isAuthenticated } = useAuth();
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<LoginFormInputs>();
   const [error, setError] = React.useState<string | null>(null);
-
+  const navigate = useNavigate()
   const onSubmit = async (userCredentials: LoginFormInputs) => {
     setError(null);
     try {
@@ -31,14 +32,8 @@ const LoginPage: React.FC = () => {
     return <Spinner size="large"/>
   }
 
-  if (isAuthenticated)
-    return (
-      <div className={styles.container}>
-        <div className={styles.formCard + " " + styles.success}>
-          Logged in as <b>{role}</b>
-        </div>
-      </div>
-    );
+  if (isAuthenticated) navigate('/bookings')
+    
 
   return (
     <div className={styles.container}>
