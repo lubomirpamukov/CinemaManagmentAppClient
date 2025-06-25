@@ -1,5 +1,5 @@
 import React from "react";
-import { useUserReservations } from "../hooks";
+import { useUserReservations, useDeleteReservation } from "../hooks";
 import { useAuth } from "../context/AuthContext";
 import styles from "./MyBookings.module.css";
 import Spinner from "../components/Spinner";
@@ -7,7 +7,16 @@ import type { TReservationDisplay } from "../validations";
 
 const MyBookingsPage: React.FC = () => {
   const { userId } = useAuth();
-  const { reservations, loading, error } = useUserReservations(userId);
+  const { reservations, loading, error, refetch } = useUserReservations(userId);
+  const { deleteReservation } = useDeleteReservation()
+
+  const handleDelete = async (reservationId: string) => {
+    if (window.confirm("Are you sure you want to delete thi reservation?")) {
+      try {
+        await deleteReservation(reservationId, refetch);
+      } catch (error) {}
+    }
+  };
 
   return (
     <div className={styles.container}>
@@ -57,6 +66,13 @@ const MyBookingsPage: React.FC = () => {
                 <strong>Created:</strong>{" "}
                 {new Date(booking.createdAt).toLocaleDateString()}
               </span>
+              <button
+                className={styles.deleteButton}
+                onClick={() => handleDelete(booking._id)}
+                type="button"
+              >
+                Delete
+              </button>
             </div>
           </div>
         ))}

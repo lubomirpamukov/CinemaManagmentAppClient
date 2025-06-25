@@ -4,7 +4,6 @@ export const createReservation = async (
   reservationData: TCreateReservation
 ) => {
   //to do add return type
-  console.log(reservationData)
   const createReservation = await fetch(BASE_URL, {
     method: "POST",
     credentials: "include",
@@ -27,6 +26,28 @@ export const fetchUserReservations = async(userId: string): Promise<TReservation
     },
   });
 
-  if (!reservations.ok) throw new Error("Failed to fetch user reservations.");
+  if (!reservations.ok) {
+    let errorMsg = "Failed to delete reservation.";
+    try {
+      const errorData = await reservations.json();
+      errorMsg = errorData.error || errorMsg;
+    } catch{}
+    throw new Error(errorMsg);
+  }
   return reservations.json();
+}
+
+export const deleteReservation = async (reservationId: string): Promise<void> => {
+  const deletedReservation = await fetch(`${BASE_URL}/${reservationId}`, {
+    method: "DELETE",
+    credentials: "include"
+  });
+  if (!deletedReservation.ok) {
+    let errorMsg = "Failed to delete reservation.";
+    try {
+      const errorData = await deletedReservation.json();
+      errorMsg = errorData.error || errorMsg;
+    } catch{}
+    throw new Error(errorMsg);
+  }
 }

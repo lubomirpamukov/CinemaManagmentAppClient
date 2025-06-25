@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import Stepper from "@mui/material/Stepper";
 import Step from "@mui/material/Step";
@@ -78,6 +79,8 @@ const BookingPage: React.FC = () => {
   const { userId } = useAuth();
   const { movieId: routeMovieId } = useParams<{ movieId: string }>();
   const { movie } = useMovieDetails(bookingData.movieId);
+  const navigate = useNavigate();
+
   useEffect(() => {
     if (movie && movie.title && bookingData.movieName !== movie.title) {
       setBookingData((prev) => ({ ...prev, movieName: movie.title }));
@@ -259,22 +262,15 @@ const BookingPage: React.FC = () => {
                 purchasedSnacks: snackQuantities,
               };
 
-              console.log(reservationPayload)
-
               try {
-                const response = await createReservation(reservationPayload);
-                // Handle success (show message, go to next step, etc.)
-                console.log("Reservation created:", response);
-              } catch (error) {
-                // Handle error (show error message)
-                console.error("Reservation failed:", error);
+                await createReservation(reservationPayload);
+                navigate("/bookings");
+              } catch (error: any) {
+                return <div className={styles.errorContainer}>{error}</div>;
               }
             }}
           />
         );
-
-      default:
-        return <Typography>Unknown step UI will go here.</Typography>;
     }
   };
 
@@ -339,7 +335,7 @@ const BookingPage: React.FC = () => {
               <Box sx={{ flex: "1 1 auto" }} />
               <Button
                 variant="contained"
-                onClick={handleNext}
+                onClick={activeStep === steps.length - 1 ? handleReset : handleNext}
                 className={styles.navButton}
                 // Add logic to disable Next if required fields for the current step are not filled
                 disabled={
@@ -353,7 +349,7 @@ const BookingPage: React.FC = () => {
                       bookingData.selectedSeats.length === 0))
                 }
               >
-                {activeStep === steps.length - 1 ? "Finish" : "Next"}
+                {activeStep === steps.length - 1 ? "Reset" : "Next"}
               </Button>
             </Box>
           </React.Fragment>
