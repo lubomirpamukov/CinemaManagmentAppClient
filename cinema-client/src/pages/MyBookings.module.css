@@ -118,6 +118,7 @@
 }
 
 .deleteButton {
+  display: flex;
   background: var(--color-error-background, #ffeaea);
   color: var(--color-error-text, #c00);
   border: 1px solid var(--color-error-border, #c00);
@@ -125,6 +126,7 @@
   padding: 0.4em 1em;
   margin-left: 12em;
   font-size: 0.95em;
+  gap: 0.5em;
   cursor: pointer;
   transition: background 0.2s, color 0.2s, border 0.2s;
 }
@@ -135,37 +137,35 @@
   border-color: var(--color-error-text, #c00);
 }
 
-/* ... existing styles ... */
-
 .filterContainer {
   margin-bottom: 2rem;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 1rem;
-  flex-wrap: wrap; /* Ensures responsiveness */
-  padding: 0 1rem; /* Adds some padding on small screens */
+  flex-wrap: wrap;
+  padding: 0 1rem;
 }
 
 .filterLabel {
   font-size: 1rem;
   font-weight: 500;
   color: var(--color-text);
-  flex-shrink: 0; /* Prevents the label from shrinking */
+  flex-shrink: 0;
 }
 
 .filterButtons {
   display: flex;
   gap: 0.75rem;
   flex-wrap: wrap;
-  justify-content: center; /* Keeps buttons centered when they wrap */
+  justify-content: center;
 }
 
 .filterButton {
   padding: 0.6rem 1.25rem;
-  border-radius: 50px; /* Creates the pill shape */
-  border: 2px solid var(--color-secondary);
-  background-color: #fff;
+  border-radius: 50px;
+  border: 2px solid var(--color-primary);
+  background-color: var(--color-background);
   color: var(--color-text);
   cursor: pointer;
   font-size: 0.9rem;
@@ -182,7 +182,7 @@
 
 .filterButton.active {
   background-color: var(--color-primary);
-  color: #fff;
+  color: var(--color-background);
   border-color: var(--color-primary);
   transform: translateY(-2px);
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
