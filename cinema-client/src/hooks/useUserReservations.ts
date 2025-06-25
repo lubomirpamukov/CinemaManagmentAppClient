@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { fetchUserReservations } from "../services";
 import type { TReservationDisplay } from "../validations";
 
@@ -7,19 +7,22 @@ export const useUserReservations = (userId: string | null) => {
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
 
-    useEffect(() => {
+   const fetchReservations = useCallback(() => {
         if (!userId) {
             setReservations([]);
             return;
         }
-
-        setLoading(false);
+        setLoading(true);
         setError(null);
         fetchUserReservations(userId)
-        .then((reservationsData) => setReservations(reservationsData))
-        .catch((err) => setError(err.message || "Failed to fetch reservation."))
-        .finally(() => setLoading(false))
+            .then((reservationsData) => setReservations(reservationsData))
+            .catch((err) => setError(err.message || "Failed to fetch reservation."))
+            .finally(() => setLoading(false));
     }, [userId]);
 
-    return { reservations, loading, error};
+    useEffect(() => {
+        fetchReservations();
+    }, [fetchReservations]);
+
+    return { reservations, loading, error, refetch: fetchReservations };
 }
