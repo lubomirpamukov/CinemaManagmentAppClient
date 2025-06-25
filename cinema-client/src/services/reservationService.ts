@@ -17,8 +17,28 @@ export const createReservation = async (
   return createReservation.json();
 };
 
-export const fetchUserReservations = async(userId: string): Promise<TReservationDisplay[]> => {
-  const reservations = await fetch(`${BASE_URL}/user/${userId}`, {
+export type TReservationFilters = {
+  userId?: string;
+  status?: ("pending" | "confirmed" | "failed" | "completed")[];
+  // Add other potential filters here
+};
+
+export const fetchUserReservations = async(filters: TReservationFilters): Promise<TReservationDisplay[]> => {
+  const params = new URLSearchParams();
+
+  Object.entries(filters).forEach(([key, value]) => {
+    if (value) {
+      // If the key is 'status' and it's an array, append each value
+      if (key === "status" && Array.isArray(value)) {
+        value.forEach((statusValue) => params.append(key, statusValue));
+      } else if (typeof value === "string") {
+        // Handle other string-based filters like userId
+        params.append(key, value);
+      }
+    }
+  });
+
+  const reservations = await fetch(`${BASE_URL}?${params.toString()}`, {
     method: "GET",
     credentials: "include",
     headers: {
