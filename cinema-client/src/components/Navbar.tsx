@@ -2,6 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import styles from "./Navbar.module.css";
 import { useAuth } from "../context/AuthContext";
+import { FaShoppingCart } from "react-icons/fa"
 
 const Navbar: React.FC = () => {
   const { isAuthenticated, logout, email } = useAuth();
@@ -18,11 +19,7 @@ const Navbar: React.FC = () => {
               Movies
             </Link>
           </li>
-          <li className={styles.navItem}>
-            <Link to="/schedule" className={styles.navLink}>
-              Schedule
-            </Link>
-          </li>
+
           {isAuthenticated && (
             <li className={styles.navItem}>
               <Link to="/bookings" className={styles.navLink}>
@@ -30,8 +27,17 @@ const Navbar: React.FC = () => {
               </Link>
             </li>
           )}
+
+          
         </ul>
         <div className={styles.navAuth}>
+          {isAuthenticated && (
+            <li className={styles.navItem}>
+              <Link to="/cart" className={styles.navLink}>
+                <FaShoppingCart size={22}/>
+              </Link>
+            </li>
+          )}
           {isAuthenticated ? (
             <>
               <span className={styles.welcomeUser}>{email}</span>
@@ -42,15 +48,13 @@ const Navbar: React.FC = () => {
           ) : (
             <React.Fragment>
               <Link to="/login" className={styles.authButton}>
-              Login
-            </Link>
+                Login
+              </Link>
 
-             <Link to="/register" className={styles.authButton}>
-              Register
-            </Link>
-            
+              <Link to="/register" className={styles.authButton}>
+                Register
+              </Link>
             </React.Fragment>
-           
           )}
         </div>
       </div>
