@@ -134,3 +134,56 @@
   color: #fff;
   border-color: var(--color-error-text, #c00);
 }
+
+/* ... existing styles ... */
+
+.filterContainer {
+  margin-bottom: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap; /* Ensures responsiveness */
+  padding: 0 1rem; /* Adds some padding on small screens */
+}
+
+.filterLabel {
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--color-text);
+  flex-shrink: 0; /* Prevents the label from shrinking */
+}
+
+.filterButtons {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  justify-content: center; /* Keeps buttons centered when they wrap */
+}
+
+.filterButton {
+  padding: 0.6rem 1.25rem;
+  border-radius: 50px; /* Creates the pill shape */
+  border: 2px solid var(--color-secondary);
+  background-color: #fff;
+  color: var(--color-text);
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-transform: capitalize;
+  transition: all 0.2s ease-in-out;
+}
+
+.filterButton:hover {
+  border-color: var(--color-primary);
+  background-color: var(--color-background);
+  color: var(--color-primary);
+}
+
+.filterButton.active {
+  background-color: var(--color-primary);
+  color: #fff;
+  border-color: var(--color-primary);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
