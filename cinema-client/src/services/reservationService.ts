@@ -71,3 +71,16 @@ export const deleteReservation = async (reservationId: string): Promise<void> =>
     throw new Error(errorMsg);
   }
 }
+
+export const confirmReservationPayment = async (reservationId: string): Promise<TReservationDisplay> => {
+  const response = await fetch(`${BASE_URL}/${reservationId}/confirm`, {
+    method: "PATCH",
+    credentials: "include",
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.error || "Failed to confirm reservation.");
+  }
+  return response.json();
+};

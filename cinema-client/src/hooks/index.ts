@@ -8,3 +8,4 @@ export * from "./useFilteredSessions";
 export * from "./useSessionSeatLayout";
 export * from "./useUserReservations";
 export * from "./useDeleteReservation";
+export * from "./useConfirmReservation";
