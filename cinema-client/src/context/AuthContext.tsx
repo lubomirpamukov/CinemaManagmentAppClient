@@ -1,14 +1,16 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { logoutUser, checkAuthStatus, loginUser } from "../services";
+import { logoutUser, getMe, loginUser } from "../services";
+import type { TUser } from "../validations";
+
+type AuthUser = TUser & { id: string; role: string };
 
 type AuthContextType = {
   isAuthenticated: boolean;
-  role: string | null;
+  user: AuthUser | null; // 1. Expose the entire user object
   loading: boolean;
-  email: string | null;
-  userId: string | null;
-  login: (email: string, password: string) => void;
+  setUser: React.Dispatch<React.SetStateAction<AuthUser | null>>; // 2. Expose setUser for updates
   logout: () => void;
+  login: (email: string, password: string) => Promise<void>;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -16,65 +18,52 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
-  const [role, setRole] = useState<string | null>(null);
-  const [userId, setUserId] = useState<string | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [email, setEmail] = useState<string | null>(null);
+  const [user, setUser] = useState<AuthUser | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  //Define checkAuth within the context
-  const checkAuth = async () => {
-    setLoading(true);
-
-    try {
-      const status = await checkAuthStatus();
-      setIsAuthenticated(true);
-      setRole(status.role);
-      setEmail(status.email)
-      setUserId(status.id)
-    } catch (error) {
-      setIsAuthenticated(false);
-      setRole(null);
-      setEmail(null);
-      console.error("Auth check failed:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  //Derive isAuthenticated directly from the user state
+  const isAuthenticated = !!user;
 
   useEffect(() => {
-    checkAuth();
+    const checkUserStatus = async () => {
+      try {
+        const loggedInUser = await getMe();
+        setUser(loggedInUser);
+      } catch (error) {
+        setUser(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    checkUserStatus();
   }, []);
 
-  const login = async (email: string, password: string) => {
-    setLoading(true);
+  const handleLogin = async (email: string, password: string) => {
     try {
       await loginUser(email, password);
-      await checkAuth();
-    } catch (error: any) {
-      setIsAuthenticated(false);
-      setRole(null);
-      setEmail(null)
-      throw error;
-    } finally {
-      setLoading(false);
+      const loggedInUser = await getMe();
+      setUser(loggedInUser);
+    } catch (error) {
+      setUser(null);
     }
   };
 
-  const logout = async () => {
-    try {
-      await logoutUser();
-      setIsAuthenticated(false);
-      setRole(null);
-      setEmail(null)
-    } catch (error: any) {
-      console.log("Failed to log out", error);
-    }
+  const handleLogout = async () => {
+    await logoutUser();
+    setUser(null);
   };
 
   return (
     <AuthContext.Provider
-      value={{ isAuthenticated, role, email, userId, login, logout, loading }}
+      value={{
+        isAuthenticated,
+        user,
+        loading,
+        setUser,
+        logout: handleLogout,
+        login: handleLogin,
+      }}
     >
       {children}
     </AuthContext.Provider>
@@ -83,8 +72,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error("useAuth must be used within an AuthProvider");
-  }
+  if (!context) throw new Error("useAuth must be used within AuthProvider");
   return context;
 };
