@@ -1,0 +1,68 @@
+.container {
+  /* Center the container and give it some padding */
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 0 2rem;
+}
+
+.heading {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.layout {
+  display: flex;
+  flex-direction: row;
+  gap: 2rem;
+  align-items: flex-start; /* Align columns to the top */
+}
+
+/* New style for the left column */
+.leftColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  flex-basis: 350px; /* Give the left column a fixed base width */
+  flex-shrink: 0; /* Prevent it from shrinking on smaller screens */
+}
+
+.content {
+  flex-grow: 1; /* The right column will take up the remaining space */
+}
+
+/* Keep your existing styles for error/success messages and the page loader */
+.errorText,
+.success {
+/* ...existing code... */
+}
+.errorText {
+/* ...existing code... */
+}
+.success {
+/* ...existing code... */
+}
+.pageLoader {
+/* ...existing code... */
+}
+
+
+/* Responsive adjustments for the new layout */
+@media (max-width: 992px) {
+  .layout {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .leftColumn {
+    width: 100%;
+    max-width: 45em; /* Match form width when stacked */
+    flex-basis: auto;
+  }
+
+  .content {
+    width: 100%;
+  }
+}
