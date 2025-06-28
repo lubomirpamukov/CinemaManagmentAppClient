@@ -6,9 +6,12 @@ import MoviePage from "./pages/MoviesPage";
 import BookingPage from "./pages/BookingPage";
 import MyBookingsPage from "./pages/MyBookingsPage";
 import ShoppingCartPage from "./pages/ShoppingCartPage";
+import ProfilePage from "./pages/ProfilePage";
 import Navbar from "./components/Navbar";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import "./App.css";
+import UpdateDetailsPage from "./pages/UpdateDetailsPage";
+import ChangePasswordPage from "./pages/ChangePasswordPage";
 
 function App() {
   return (
@@ -23,6 +26,11 @@ function App() {
             <Route path="/booking/:movieId" element={<BookingPage />} />
             <Route path="/bookings" element={<MyBookingsPage />} />
             <Route path="/cart" element={<ShoppingCartPage />} />
+            <Route path="/my-profile" element={<ProfilePage />}>
+              <Route index element={<Navigate to="details" replace />} />
+              <Route path="details" element={<UpdateDetailsPage />} />
+              <Route path="password" element={<ChangePasswordPage />} />
+            </Route>
           </Routes>
         </AuthProvider>
       </BrowserRouter>

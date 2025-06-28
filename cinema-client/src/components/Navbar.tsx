@@ -2,10 +2,10 @@ import React from "react";
 import { Link } from "react-router-dom";
 import styles from "./Navbar.module.css";
 import { useAuth } from "../context/AuthContext";
-import { FaShoppingCart } from "react-icons/fa"
+import { FaShoppingCart } from "react-icons/fa";
 
 const Navbar: React.FC = () => {
-  const { isAuthenticated, logout, email } = useAuth();
+  const { isAuthenticated, logout, user } = useAuth();
 
   return (
     <nav className={styles.navbar}>
@@ -27,20 +27,20 @@ const Navbar: React.FC = () => {
               </Link>
             </li>
           )}
-
-          
         </ul>
         <div className={styles.navAuth}>
           {isAuthenticated && (
             <li className={styles.navItem}>
               <Link to="/cart" className={styles.navLink}>
-                <FaShoppingCart size={22}/>
+                <FaShoppingCart size={22} />
               </Link>
             </li>
           )}
           {isAuthenticated ? (
             <>
-              <span className={styles.welcomeUser}>{email}</span>
+              <Link to="my-profile" className={styles.welcomeUser}>
+                {user?.name ? user?.name : user?.email}
+              </Link>
               <button onClick={logout} className={styles.authButton}>
                 Logout
               </button>
