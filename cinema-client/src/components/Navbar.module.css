@@ -87,10 +87,11 @@
 
 .welcomeUser {
   color: var(--color-primary);
-  font-size: 1rem;
+  font-size: 1.1rem;
   margin-right: 0;
   margin-bottom: 0.5rem;
   margin-top: 1.5em;
+  text-decoration: none;
 }
 
 .authButton {
