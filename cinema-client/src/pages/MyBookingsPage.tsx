@@ -9,15 +9,15 @@ import ReservationCard from "../components/reservation/ReservationCard";
 import { FaTrash } from "react-icons/fa";
 
 const MyBookingsPage: React.FC = () => {
-  const { userId } = useAuth();
+  const { user } = useAuth();
   const [filters, setFilters] = useState<TReservationFilters>({});
   const { reservations, loading, error, refetch } =
     useUserReservations(filters);
   const { deleteReservation } = useDeleteReservation();
 
   useEffect(() => {
-    if (userId) setFilters((prev) => ({ ...prev, userId }));
-  }, [userId]);
+    if (user?.id) setFilters((prev) => ({ ...prev, userId: user.id }));
+  }, [user?.id]);
 
   const handleStatusClick = (
     status: "pending" | "confirmed" | "failed" | "completed"

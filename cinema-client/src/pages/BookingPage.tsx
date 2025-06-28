@@ -76,7 +76,7 @@ const BookingPage: React.FC = () => {
     selectedSnacks: {},
   });
 
-  const { userId } = useAuth();
+  const { user } = useAuth();
   const { movieId: routeMovieId } = useParams<{ movieId: string }>();
   const { movie } = useMovieDetails(bookingData.movieId);
   const navigate = useNavigate();
@@ -88,10 +88,10 @@ const BookingPage: React.FC = () => {
   }, [movie]);
 
   useEffect(() => {
-    if (userId) {
-      setBookingData((prev) => ({ ...prev, userId: userId }));
+    if (user?.id) {
+      setBookingData((prev) => ({ ...prev, userId: user.id }));
     }
-  }, [userId]);
+  }, [user?.id]);
 
   useEffect(() => {
     if (routeMovieId) {

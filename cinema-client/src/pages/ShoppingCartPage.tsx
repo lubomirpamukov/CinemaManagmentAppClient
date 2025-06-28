@@ -6,12 +6,12 @@ import styles from "./ShoppingCartPage.module.css";
 import ReservationCard from "../components/reservation/ReservationCard";
 
 const ShoppingCartPage: React.FC = () => {
-  const { userId } = useAuth();
+  const { user } = useAuth();
 
   const filters = useMemo(() => ({
-    userId: userId!,
+    userId: user?.id,
     status: ["pending"] as ("pending" | "confirmed" | "failed" | "completed")[]
-  }), [userId]);
+  }), [user?.id]);
 
   const {
     reservations: pendingReservations,
