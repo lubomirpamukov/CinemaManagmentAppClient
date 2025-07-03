@@ -6,6 +6,17 @@ const ProfileSidebar: React.FC = () => {
   return (
     <nav className={styles.sidebar}>
       <ul className={styles.navList}>
+
+        <li className={styles.navItem}>
+          <NavLink
+            to="/my-profile/bookings"
+            className={({ isActive }) =>
+              isActive ? `${styles.navLink} ${styles.active}` : styles.navLink
+            }
+          >
+            My Bookings
+          </NavLink>
+        </li>
         
         <li className={styles.navItem}>
           <NavLink
