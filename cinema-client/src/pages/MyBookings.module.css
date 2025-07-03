@@ -1,9 +1,14 @@
 .container {
   max-width: 900px;
   margin: 0 auto;
-  padding: 2rem 1rem;
-  background: var(--color-background);
-  min-height: 80vh;
+  min-height: 60vh;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
+  border: 1px solid #f0f0f0;
+  width: 100%;
+  max-width: 45em;
+  margin-top: 2em ;
 }
 
 .heading {

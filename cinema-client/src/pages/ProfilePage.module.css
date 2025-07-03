@@ -1,5 +1,4 @@
 .container {
-  /* Center the container and give it some padding */
   max-width: 1200px;
   margin: 2rem auto;
   padding: 0 2rem;
@@ -11,45 +10,28 @@
   color: var(--color-primary);
   text-align: center;
   margin-bottom: 2rem;
+  margin-left: 30% ;
 }
 
 .layout {
   display: flex;
   flex-direction: row;
   gap: 2rem;
-  align-items: flex-start; /* Align columns to the top */
+  align-items: flex-start;
 }
 
-/* New style for the left column */
 .leftColumn {
   display: flex;
   flex-direction: column;
   gap: 2rem;
-  flex-basis: 350px; /* Give the left column a fixed base width */
-  flex-shrink: 0; /* Prevent it from shrinking on smaller screens */
+  flex-basis: 350px;
+  flex-shrink: 0;
 }
 
 .content {
-  flex-grow: 1; /* The right column will take up the remaining space */
+  flex-grow: 1;
 }
 
-/* Keep your existing styles for error/success messages and the page loader */
-.errorText,
-.success {
-/* ...existing code... */
-}
-.errorText {
-/* ...existing code... */
-}
-.success {
-/* ...existing code... */
-}
-.pageLoader {
-/* ...existing code... */
-}
-
-
-/* Responsive adjustments for the new layout */
 @media (max-width: 992px) {
   .layout {
     flex-direction: column;
@@ -58,11 +40,15 @@
 
   .leftColumn {
     width: 100%;
-    max-width: 45em; /* Match form width when stacked */
+    max-width: 45em;
     flex-basis: auto;
   }
 
   .content {
     width: 100%;
   }
+
+  .heading {
+  margin-left: 0% ;
+}
 }

@@ -27,7 +27,7 @@ const ProfilePage: React.FC = () => {
 
   return (
     <div className={styles.container}>
-      <h1 className={styles.heading}>My Account</h1>
+      <h1 className={styles.heading}>Dashboard</h1>
       <div className={styles.layout}>
         {/* 1. Create a dedicated left column */}
         <div className={styles.leftColumn}>
