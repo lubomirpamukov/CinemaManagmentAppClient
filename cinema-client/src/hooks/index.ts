@@ -10,3 +10,4 @@ export * from "./useUserReservations";
 export * from "./useDeleteReservation";
 export * from "./useConfirmReservation";
 export * from "./useUpdateUser";
+export * from "./useShowcase";

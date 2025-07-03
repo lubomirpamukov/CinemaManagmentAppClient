@@ -1,4 +1,4 @@
-import { type TMovie, movieSchema, mongooseObjectIdValidationRegex } from "../validations";
+import { type TMovie, movieSchema, mongooseObjectIdValidationRegex, type ShowcaseMovies } from "../validations";
 
 const BASE_URL = 'http://localhost:3123/movies';
 
@@ -17,4 +17,16 @@ export const fetchMovieById = async (movieId:string): Promise<TMovie> => {
     } catch (err: any) {
         throw err;
     }
+}
+
+export const fetchShowcaseMovies = async(): Promise<ShowcaseMovies> => {
+    
+    const response = await fetch(`${BASE_URL}/showcase` ,{
+        method: "GET",
+        credentials: "include"
+    })
+    if (!response.ok) throw new Error("Failed to fetch showcase movies.");
+
+    const movies = await response.json()
+    return movies;
 }
