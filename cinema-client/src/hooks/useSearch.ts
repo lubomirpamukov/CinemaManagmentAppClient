@@ -2,16 +2,14 @@ import { useEffect } from "react";
 
 type UserSearchComponentProps = {
   debouncedValue: string;
-  setCurrentPage: (page: number) => void;
+  onSearch: () => void;
 };
 
 export const useSearch = ({
   debouncedValue,
-  setCurrentPage,
+  onSearch,
 }: UserSearchComponentProps) => {
-    useEffect(() => {
-        if(setCurrentPage) {
-            setCurrentPage(1);
-        }
-    }, [debouncedValue, setCurrentPage])
+  useEffect(() => {
+    onSearch();
+  }, [debouncedValue, onSearch]);
 };

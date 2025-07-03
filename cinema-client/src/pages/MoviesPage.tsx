@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { z } from "zod";
 
 import { useSearch, usePaginated, useDebounce } from "../hooks";
@@ -11,7 +11,8 @@ import Spinner from "../components/Spinner";
 
 const MoviePage: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState<string>("");
-  const debouncedSearchTerm = useDebounce(searchTerm, 600);
+  const debouncedSearchTerm = useDebounce(searchTerm, 800);
+  const [resetToken, setResetToken] = useState(0);
 
   const moveiFilters = useMemo(() => {
     const filters: Record<string, string | number | boolean | undefined> = {};
@@ -31,16 +32,20 @@ const MoviePage: React.FC = () => {
     loading,
     error,
     refresh,
-  } = usePaginated("/movies", 3, paginatedMovieSchema, moveiFilters);
+  } = usePaginated("/movies", 3, paginatedMovieSchema, moveiFilters, resetToken);
 
-  useSearch({ debouncedValue: debouncedSearchTerm, setCurrentPage });
+  const handleSearch = useCallback(() => {
+    setResetToken(Date.now());
+  }, []);
+
+  useSearch({ debouncedValue: debouncedSearchTerm, onSearch: handleSearch });
 
 
   const handleSearchChange = (currentQuery: string) => {
     setSearchTerm(currentQuery);
   };
 
-  if (loading) {
+  if (loading && movies.length === 0) {
     return <Spinner size="large" className={styles.fullscreen}/>;
   }
 
