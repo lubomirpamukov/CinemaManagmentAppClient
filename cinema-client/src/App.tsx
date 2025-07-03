@@ -7,7 +7,9 @@ import BookingPage from "./pages/BookingPage";
 import MyBookingsPage from "./pages/MyBookingsPage";
 import ShoppingCartPage from "./pages/ShoppingCartPage";
 import ProfilePage from "./pages/ProfilePage";
+import LandingPage from "./pages/LandingPage";
 import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import "./App.css";
 import UpdateDetailsPage from "./pages/UpdateDetailsPage";
@@ -20,6 +22,7 @@ function App() {
         <AuthProvider>
           <Navbar />
           <Routes>
+            <Route path="/" element={<LandingPage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/movies" element={<MoviePage />} />
@@ -27,11 +30,13 @@ function App() {
             <Route path="/bookings" element={<MyBookingsPage />} />
             <Route path="/cart" element={<ShoppingCartPage />} />
             <Route path="/my-profile" element={<ProfilePage />}>
-              <Route index element={<Navigate to="details" replace />} />
+              <Route index element={<Navigate to="bookings" replace />} />
+              <Route path="bookings" element={<MyBookingsPage />} />
               <Route path="details" element={<UpdateDetailsPage />} />
               <Route path="password" element={<ChangePasswordPage />} />
             </Route>
           </Routes>
+          <Footer />
         </AuthProvider>
       </BrowserRouter>
     </StrictMode>
