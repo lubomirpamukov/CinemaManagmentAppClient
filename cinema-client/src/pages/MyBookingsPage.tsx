@@ -3,8 +3,7 @@ import { useUserReservations, useDeleteReservation } from "../hooks";
 import { useAuth } from "../context/AuthContext";
 import styles from "./MyBookings.module.css";
 import Spinner from "../components/Spinner";
-import type { TReservationDisplay } from "../validations";
-import type { TReservationFilters } from "../services/";
+import type { TReservationDisplay, TReservationFilters } from "../validations";
 import ReservationCard from "../components/reservation/ReservationCard";
 import { FaTrash } from "react-icons/fa";
 
@@ -72,16 +71,16 @@ const MyBookingsPage: React.FC = () => {
       {error && <div className={styles.error}>{error}</div>}
       <div className={styles.list}>
         {reservations.map((booking: TReservationDisplay) => (
-          <ReservationCard 
+          <ReservationCard
             key={booking._id}
             reservation={booking}
-            actions = {
-              <button 
+            actions={
+              <button
                 className={styles.deleteButton}
                 onClick={() => handleDelete(booking._id)}
                 type="button"
               >
-                <FaTrash/>
+                <FaTrash />
                 Delete
               </button>
             }
