@@ -36,6 +36,9 @@ export const userSchema = z.object({
   address: addressSchema.optional()
 });
 
+export const userResponseSchema = userSchema.omit({ password: true});
+export type TUserResponse = z.infer<typeof userResponseSchema>;
+
 export type TUser = z.infer<typeof userSchema>;
 
 // schema for updating user details

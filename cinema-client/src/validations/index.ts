@@ -6,3 +6,4 @@ export * from "./cinema.ts";
 export * from "./snack.ts";
 export * from "./reservation.ts";
 export * from "./reservation.ts";
+export * from "./paginated.ts";

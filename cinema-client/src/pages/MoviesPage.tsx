@@ -1,6 +1,4 @@
 import { useCallback, useMemo, useState } from "react";
-import { z } from "zod";
-
 import { useSearch, usePaginated, useDebounce } from "../hooks";
 import Pagination from "../components/Pagination";
 import { movieSchema } from "../validations";
@@ -22,7 +20,6 @@ const MoviePage: React.FC = () => {
     return filters
   }, [debouncedSearchTerm])
 
-  const paginatedMovieSchema = useMemo(() => z.array(movieSchema), []);
 
   const {
     data: movies,
@@ -32,7 +29,7 @@ const MoviePage: React.FC = () => {
     loading,
     error,
     refresh,
-  } = usePaginated("/movies", 3, paginatedMovieSchema, moveiFilters, resetToken);
+  } = usePaginated("/movies", 3, movieSchema, moveiFilters, resetToken);
 
   const handleSearch = useCallback(() => {
     setResetToken(Date.now());

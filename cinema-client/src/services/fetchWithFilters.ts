@@ -1,19 +1,19 @@
+import { ZodError, type ZodSchema } from "zod";
+
 const BASE_URL = "http://localhost:3123";
 /**
- * Fetches data from the specified endpoint with optional query parameters.
+ * Fetches and validates data from the specified endpoint with optional query parameters.
  *
- * Constructs a GET request to `${BASE_URL}${baseEndpoint}` and appends any provided
- * query parameters. Handles errors by including endpoint and status information,
- * and appends backend error message if available.
- *
- * @template T - The Expected return type of the response data.
- * @param {string} baseEndpoint - The API endpoint to fetch from.
- * @param {Record<string, string | number | boolean | undefined>} [params] - Optional query parameters to include in the request.
- * @throws {Error} If the request fails, throws an error with details from the backend or a generic message.
- * @returns {Promise<T>} Resolves with the response data parsed as type T.
+ * @template T - The expected return type of the response data, inferred from the schema.
+ * @param {string} baseEndpoint - The API endpoint to fetch from (e.g., "/session").
+ * @param {ZodSchema<T>} schema - The Zod schema to validate the response data.
+ * @param {Record<string, string | number | boolean | undefined>} [params] - Optional query parameters.
+ * @throws {Error} If the request fails or if the response data fails schema validation.
+ * @returns {Promise<T>} Resolves with the validated response data.
  */
 export const fetchWithFilters = async <T>(
-  baseEndpoint: string, // e.g /session , /movie , etc ..
+  baseEndpoint: string, // e.g /session , /movie , etc ..,
+  schema: ZodSchema<T>,
   params?: Record<string, string | number | boolean | undefined>
 ): Promise<T> => {
   const queryParams = new URLSearchParams();
@@ -45,11 +45,18 @@ export const fetchWithFilters = async <T>(
       if (errorData && errorData.message) {
         errorMsg += ` - ${errorData.message}`;
       }
-    } catch (error: any) {
-      errorMsg = error.message || errorMsg;
-    }
+    } catch (error: any) {}
     throw new Error(errorMsg);
   }
   const result = await response.json();
-  return result as T;
+
+  //Validate successful response against schema
+  try {
+    return schema.parse(result);
+  } catch (error) {
+    if (error instanceof ZodError) {
+      throw new Error(`API response validation failed - ${error.errors.map((e) => e.message).join(", ")}`)
+    }
+    throw error;
+  }
 };

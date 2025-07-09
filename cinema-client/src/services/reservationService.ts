@@ -1,5 +1,6 @@
 import z, { ZodError } from "zod";
 import {
+  mongooseObjectIdValidationRegex,
   reservationDisplaySchema,
   type TCreateReservation,
   type TReservationDisplay,
@@ -117,6 +118,9 @@ export const fetchUserReservations = async (
 export const deleteReservation = async (
   reservationId: string
 ): Promise<void> => {
+    if (!mongooseObjectIdValidationRegex.parse(reservationId))
+    throw new Error("Invalid Reservation ID format.");
+  
   const deletedReservation = await fetch(`${BASE_URL}/${reservationId}`, {
     method: "DELETE",
     credentials: "include",
@@ -142,6 +146,9 @@ export const deleteReservation = async (
 export const confirmReservationPayment = async (
   reservationId: string
 ): Promise<TReservationDisplay> => {
+    if (!mongooseObjectIdValidationRegex.parse(reservationId))
+      throw new Error("Invalid Reservation ID format.");
+    
   const response = await fetch(`${BASE_URL}/${reservationId}/confirm`, {
     method: "PATCH",
     credentials: "include",

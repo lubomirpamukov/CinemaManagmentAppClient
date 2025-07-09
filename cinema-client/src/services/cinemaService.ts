@@ -1,3 +1,5 @@
+import { mongooseObjectIdValidationRegex } from "../validations";
+
 const BASE_URL = "http://localhost:3123/cinemas";
 
 /**
@@ -10,6 +12,9 @@ const BASE_URL = "http://localhost:3123/cinemas";
  * @returns {Promise<string[]>} Resolves to an array of city names where the movie is shown.
  */
 export const fetchMovieCities = async (movieId: string): Promise<string[]> => {
+  if (!mongooseObjectIdValidationRegex.parse(movieId))
+    throw new Error("Invalid Movie ID format.");
+
   const cities = await fetch(`${BASE_URL}/movies/${movieId}`, {
     method: "GET",
     credentials: "include",

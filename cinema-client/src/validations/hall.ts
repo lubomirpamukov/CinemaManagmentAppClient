@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { mongooseObjectIdValidationRegex } from "./session";
 
 // constants
 export const HallValidation = {
@@ -26,6 +27,17 @@ export const seatsSchema = z.object({
   price: z.number().min(0, HallValidation.price),
 });
 
-//types
+export const sessionSeatLayoutSchema = z.object({
+  sessionId: mongooseObjectIdValidationRegex,
+  hallId: mongooseObjectIdValidationRegex,
+  hallName: z.string().min(3, HallValidation.name),
+  hallLayout: z.object({
+    rows: z.number().int().positive(),
+    columns: z.number().int().positive(),
+  }),
+  seats: z.array(seatsSchema),
+})
 
+//types
+export type TSessionSeatLayout = z.infer<typeof sessionSeatLayoutSchema>;
 export type THallSeat = z.infer<typeof seatsSchema>;

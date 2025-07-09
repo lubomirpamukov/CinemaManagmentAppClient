@@ -1,6 +1,6 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { fetchWithFilters } from "../services";
-import { ZodSchema } from "zod";
+import z, { ZodSchema } from "zod";
 
 export type PaginatedResponse<ItemType> = {
   data: ItemType[];
@@ -11,7 +11,7 @@ export type PaginatedResponse<ItemType> = {
 export const usePaginated = <T>(
   endpoint: string,
   pageSize: number,
-  schema: ZodSchema<T[]>,
+  itemSchema: ZodSchema<T>,
   otherFilters?: Record<string, string | number | boolean | undefined>,
   resetToken?: any
 ) => {
@@ -20,6 +20,13 @@ export const usePaginated = <T>(
   const [totalPages, setTotalPages] = useState(0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  //This combines the item schema with pagination structure.
+  const paginatedResponseSchema = useMemo(() => z.object({
+    data: z.array(itemSchema),
+    totalPages: z.number(),
+    currentPage: z.number()
+  }), [itemSchema])
   
   useEffect(() => {
     if (currentPage !== 1) {
@@ -41,10 +48,10 @@ export const usePaginated = <T>(
       try {
         const response = await fetchWithFilters<PaginatedResponse<T>>(
           endpoint,
+          paginatedResponseSchema,
           apiParams
         );
-        const validatedData = schema.parse(response.data);
-        setData(validatedData);
+        setData(response.data);
         setTotalPages(response.totalPages);
       } catch (error: any) {
         setError("Error fetching data");
@@ -54,7 +61,7 @@ export const usePaginated = <T>(
         setLoading(false);
       }
     },
-    [endpoint, pageSize, schema, otherFilters]
+    [endpoint, pageSize, paginatedResponseSchema, otherFilters]
   );
 
   useEffect(() => {

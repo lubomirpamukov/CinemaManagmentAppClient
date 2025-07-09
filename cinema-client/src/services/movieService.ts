@@ -20,6 +20,9 @@ const BASE_URL = "http://localhost:3123/movies";
  * @returns {Promise<TMovie>} Resolves to validated movie object.
  */
 export const fetchMovieById = async (movieId: string): Promise<TMovie> => {
+  if (!mongooseObjectIdValidationRegex.parse(movieId))
+    throw new Error("Invalid Movie ID format.");
+
   const validateMovieId = mongooseObjectIdValidationRegex.parse(movieId);
   if (!validateMovieId) throw new Error("Invalid Movie ID format.");
 
