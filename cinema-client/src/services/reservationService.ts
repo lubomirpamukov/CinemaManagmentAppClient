@@ -1,4 +1,4 @@
-import { ZodError } from "zod";
+import z, { ZodError } from "zod";
 import {
   reservationDisplaySchema,
   type TCreateReservation,
@@ -6,10 +6,14 @@ import {
   type TReservationFilters,
 } from "../validations";
 const BASE_URL = "http://localhost:3123/reservation";
+
 /**
- * Make api request to create Reservation
- * @param {TCreateReservation} [reservationData] - Object to create
- * @returns
+ * Makes an API request to create a reservation.
+ *
+ * @param {TCreateReservation} reservationData - The reservation data to create.
+ * @throws {Error} If the backend returns an error (with server message and status if available),
+ * or if the response data fails schema validation.
+ * @returns {Promise<TReservationDisplay>} Resolves to the validated reservation object.
  */
 export const createReservation = async (
   reservationData: TCreateReservation
@@ -35,54 +39,81 @@ export const createReservation = async (
     throw new Error(errorMsg);
   }
 
-  const reservation = await response.json()
+  const reservation = await response.json();
   try {
     const validReservation = reservationDisplaySchema.parse(reservation);
-    return validReservation
+    return validReservation;
   } catch (error) {
     if (error instanceof ZodError) {
-      throw new Error(`Failed ReservationDisplaySchema: ${error.errors.map(e => e.message)}`)
+      throw new Error(
+        `Failed ReservationDisplaySchema: ${error.errors.map((e) => e.message)}`
+      );
     }
   }
   return response.json();
 };
 
+/**
+ * Fetches reservations for a user, with optional filters.
+ * @param {TReservationFilters} [filters] - Optional filters, such as userId and status array.
+ * @throws {Error} If the backend returns an error (with server message and status if available),
+ * or if the response data fails schema validation.
+ * @returns {Promise<TReservationDisplay[]>} Resolves to an array of validated reservation objects.
+ */
 export const fetchUserReservations = async (
-  filters: TReservationFilters
+  filters?: TReservationFilters
 ): Promise<TReservationDisplay[]> => {
   const params = new URLSearchParams();
 
-  Object.entries(filters).forEach(([key, value]) => {
-    if (value) {
-      // If the key is 'status' and it's an array, append each value
-      if (key === "status" && Array.isArray(value)) {
-        value.forEach((statusValue) => params.append(key, statusValue));
-      } else if (typeof value === "string") {
-        // Handle other string-based filters like userId
-        params.append(key, value);
+  if (filters) {
+    Object.entries(filters).forEach(([key, value]) => {
+      if (value) {
+        if (key === "status" && Array.isArray(value)) {
+          value.forEach((statusValue) => params.append(key, statusValue));
+        } else if (typeof value === "string") {
+          params.append(key, value);
+        }
       }
-    }
-  });
+    });
+  }
 
-  const reservations = await fetch(`${BASE_URL}?${params.toString()}`, {
+  const response = await fetch(`${BASE_URL}?${params.toString()}`, {
     method: "GET",
     credentials: "include",
-    headers: {
-      "Content-Type": "application/json",
-    },
   });
 
-  if (!reservations.ok) {
-    let errorMsg = "Failed to delete reservation.";
+  if (!response.ok) {
+    let errorMsg = `Failed to fetch reservations from ${BASE_URL}?${params.toString()}`;
     try {
-      const errorData = await reservations.json();
-      errorMsg = errorData.error || errorMsg;
+      const errorData = await response.json();
+      if (errorData && errorData.message) {
+        errorMsg += ` - ${errorData.message}`;
+      }
     } catch {}
     throw new Error(errorMsg);
   }
-  return reservations.json();
+
+  const reservationsData = await response.json();
+  try {
+    return z.array(reservationDisplaySchema).parse(reservationsData);
+  } catch (error) {
+    if (error instanceof ZodError) {
+      throw new Error(
+        `Reservation list validation failed: ${error.errors.map(
+          (e) => e.message
+        )}`
+      );
+    }
+    throw error;
+  }
 };
 
+/**
+ * Deletes a reservation by its Id.
+ * @param {string} reservationId - The Id of the reservation to delete.
+ * @throws {Error} If the request  fails, throws an error with details from the backend or a generic message.
+ * @returns {Promise<void>} Resloves if the deleteion was successful.
+ */
 export const deleteReservation = async (
   reservationId: string
 ): Promise<void> => {
@@ -91,15 +122,23 @@ export const deleteReservation = async (
     credentials: "include",
   });
   if (!deletedReservation.ok) {
-    let errorMsg = "Failed to delete reservation.";
+    let errorMsg = `Failed to delete reservation from ${BASE_URL}/${reservationId} : ${deletedReservation.status}`;
     try {
       const errorData = await deletedReservation.json();
-      errorMsg = errorData.error || errorMsg;
+      if (errorData && errorData.message) {
+        errorMsg += ` - ${errorData.message}`;
+      }
     } catch {}
     throw new Error(errorMsg);
   }
 };
 
+/**
+ * Confirms a reservation payment by its Id.
+ * @param {string} reservationId - The Id of the reservation to confirm.
+ * @throws {Error} If the request fails, throws an error with details from the backend or a generic message.
+ * @returns {Promise<TReservationDisplay>} Resolves to the updated and validated reservation object.
+ */
 export const confirmReservationPayment = async (
   reservationId: string
 ): Promise<TReservationDisplay> => {
@@ -109,8 +148,27 @@ export const confirmReservationPayment = async (
   });
 
   if (!response.ok) {
-    const errorData = await response.json();
-    throw new Error(errorData.error || "Failed to confirm reservation.");
+    let errorMsg = `Failed to confirm reservation ${reservationId}: ${response.status}`;
+    try {
+      const errorData = await response.json();
+      if (errorData && errorData.message) {
+        errorMsg += ` - ${errorData.message}`;
+      }
+    } catch (error) {}
+    throw new Error(errorMsg);
   }
-  return response.json();
+
+  const reservationData = await response.json();
+  try {
+    return reservationDisplaySchema.parse(reservationData);
+  } catch (error) {
+    if (error instanceof ZodError) {
+      throw new Error(
+        `Reservation confirmation response validation failed: ${error.errors.map(
+          (e) => e.message
+        )}`
+      );
+    }
+    throw error;
+  }
 };
