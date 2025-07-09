@@ -68,6 +68,12 @@ export const movieSchema = z.object({
 
 export type TMovie = z.infer<typeof movieSchema>;
 
+export const showcaseMoviesSchema = z.object({
+  newMovies: movieSchema.array(),
+  popularMovies: movieSchema.array(),
+  recommendedMovies: movieSchema.array()
+})
+
 export type ShowcaseMovies = {
   newMovies: TMovie[];
   popularMovies: TMovie[];
