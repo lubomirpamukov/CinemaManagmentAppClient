@@ -1,5 +1,5 @@
 import React from "react";
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../hooks";
 import { useUpdateUser } from "../hooks";
 import ChangePasswordForm from "../components/user/ChangePasswordForm";
 import { type TChangePassword } from "../validations";

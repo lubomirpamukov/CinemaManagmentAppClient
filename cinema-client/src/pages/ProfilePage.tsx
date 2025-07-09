@@ -1,5 +1,5 @@
 import React from "react";
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../hooks";
 import Spinner from "../components/Spinner";
 import styles from "./ProfilePage.module.css";
 import ProfileSidebar from "../components/user/ProfileSidebar";

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useUserReservations, useDeleteReservation } from "../hooks";
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../hooks";
 import styles from "./MyBookings.module.css";
 import Spinner from "../components/Spinner";
 import type { TReservationDisplay, TReservationFilters } from "../validations";

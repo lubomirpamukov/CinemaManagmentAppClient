@@ -16,7 +16,7 @@ export const fetchMovieCities = async (movieId: string): Promise<string[]> => {
   });
 
   if (!cities.ok) {
-    let errorMsg = `Failed to fetch cities from /cinemas/movies/${movieId}: ${cities.status}`;
+    let errorMsg = `Failed to fetch cities from ${BASE_URL}/movies/${movieId}: ${cities.status}`;
     try {
       const errorData = await cities.json();
       if (errorData && errorData.message) {

@@ -21,7 +21,7 @@ import SelectSessionStep from "../components/booking/SelectSessionStep";
 import SelectSeatsStep from "../components/booking/SelectSeatsStep";
 import ConfirmReservation from "../components/booking/ConfirmReservationStep";
 import { useMovieDetails } from "../hooks/useMovieDetails";
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../hooks";
 import { createReservation } from "../services/reservationService";
 
 const useStyles = makeStyles(() => ({

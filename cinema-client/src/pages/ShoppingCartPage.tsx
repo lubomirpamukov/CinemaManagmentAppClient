@@ -1,5 +1,5 @@
 import React, { useMemo } from "react";
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../hooks";
 import { useUserReservations, useConfirmReservation } from "../hooks";
 import Spinner from "../components/Spinner";
 import styles from "./ShoppingCartPage.module.css";

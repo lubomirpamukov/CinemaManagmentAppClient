@@ -11,3 +11,4 @@ export * from "./useDeleteReservation";
 export * from "./useConfirmReservation";
 export * from "./useUpdateUser";
 export * from "./useShowcase";
+export * from "./useAuth";

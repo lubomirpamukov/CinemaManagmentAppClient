@@ -45,7 +45,6 @@ export const updateUser = async (
   if (!mongooseObjectIdValidationRegex.parse(userId)) {
     throw new Error("Invalid user ID format. Please try again.");
   }
-  console.log(updates);
   const userData = await fetch(`${BASE_URL}/users/${userId}`, {
     method: "PATCH",
     credentials: "include",
