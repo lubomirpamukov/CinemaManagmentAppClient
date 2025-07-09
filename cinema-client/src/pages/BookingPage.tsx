@@ -326,8 +326,13 @@ const BookingPage: React.FC = () => {
             <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
               <Button
                 variant="contained"
-                disabled={activeStep === 0}
-                onClick={handleBack}
+                onClick={() => {
+                  if (activeStep === 0) {
+                    navigate(-1)
+                  } else {
+                    handleBack();
+                  }
+                }}
                 className={styles.navButton}
               >
                 Back
