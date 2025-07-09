@@ -1,9 +1,9 @@
 .card {
+  display: flex;
+  flex-direction: column;
   background: #fff;
   border-radius: 12px;
   padding: 1.5rem;
-  min-width: 12em;
-  max-width: 22em;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
   border-left: 5px solid var(--color-secondary);
   transition: all 0.2s ease-in-out;
@@ -67,7 +67,7 @@
 }
 
 .actionsContainer {
-  margin-top: 1.5rem;
+  margin-top: auto;
   display: flex;
   justify-content: flex-end;
   gap: 1rem;
