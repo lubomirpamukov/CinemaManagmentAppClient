@@ -1,29 +1,55 @@
-import { type TCreateReservation, type TReservationDisplay } from "../validations";
+import { ZodError } from "zod";
+import {
+  reservationDisplaySchema,
+  type TCreateReservation,
+  type TReservationDisplay,
+  type TReservationFilters,
+} from "../validations";
 const BASE_URL = "http://localhost:3123/reservation";
+/**
+ * Make api request to create Reservation
+ * @param {TCreateReservation} [reservationData] - Object to create
+ * @returns
+ */
 export const createReservation = async (
   reservationData: TCreateReservation
-) => {
+): Promise<TReservationDisplay> => {
   //to do add return type
-  const createReservation = await fetch(BASE_URL, {
+  const response = await fetch(BASE_URL, {
     method: "POST",
     credentials: "include",
     headers: {
-        "Content-Type": "application/json",
+      "Content-Type": "application/json",
     },
     body: JSON.stringify(reservationData),
   });
 
-  if (!createReservation.ok) throw new Error("Failed to create Reservation.");
-  return createReservation.json();
+  if (!response.ok) {
+    let errorMsg = `Failed to create reservation from ${BASE_URL} : Status - ${response.status}`;
+    try {
+      const errorData = await response.json();
+      if (errorData && errorData.message) {
+        errorMsg += ` - ${errorData.message}`;
+      }
+    } catch (error: any) {}
+    throw new Error(errorMsg);
+  }
+
+  const reservation = await response.json()
+  try {
+    const validReservation = reservationDisplaySchema.parse(reservation);
+    return validReservation
+  } catch (error) {
+    if (error instanceof ZodError) {
+      throw new Error(`Failed ReservationDisplaySchema: ${error.errors.map(e => e.message)}`)
+    }
+  }
+  return response.json();
 };
 
-export type TReservationFilters = {
-  userId?: string;
-  status?: ("pending" | "confirmed" | "failed" | "completed")[];
-  // Add other potential filters here
-};
-
-export const fetchUserReservations = async(filters: TReservationFilters): Promise<TReservationDisplay[]> => {
+export const fetchUserReservations = async (
+  filters: TReservationFilters
+): Promise<TReservationDisplay[]> => {
   const params = new URLSearchParams();
 
   Object.entries(filters).forEach(([key, value]) => {
@@ -42,7 +68,7 @@ export const fetchUserReservations = async(filters: TReservationFilters): Promis
     method: "GET",
     credentials: "include",
     headers: {
-      "Content-Type": "application/json"
+      "Content-Type": "application/json",
     },
   });
 
@@ -51,28 +77,32 @@ export const fetchUserReservations = async(filters: TReservationFilters): Promis
     try {
       const errorData = await reservations.json();
       errorMsg = errorData.error || errorMsg;
-    } catch{}
+    } catch {}
     throw new Error(errorMsg);
   }
   return reservations.json();
-}
+};
 
-export const deleteReservation = async (reservationId: string): Promise<void> => {
+export const deleteReservation = async (
+  reservationId: string
+): Promise<void> => {
   const deletedReservation = await fetch(`${BASE_URL}/${reservationId}`, {
     method: "DELETE",
-    credentials: "include"
+    credentials: "include",
   });
   if (!deletedReservation.ok) {
     let errorMsg = "Failed to delete reservation.";
     try {
       const errorData = await deletedReservation.json();
       errorMsg = errorData.error || errorMsg;
-    } catch{}
+    } catch {}
     throw new Error(errorMsg);
   }
-}
+};
 
-export const confirmReservationPayment = async (reservationId: string): Promise<TReservationDisplay> => {
+export const confirmReservationPayment = async (
+  reservationId: string
+): Promise<TReservationDisplay> => {
   const response = await fetch(`${BASE_URL}/${reservationId}/confirm`, {
     method: "PATCH",
     credentials: "include",
