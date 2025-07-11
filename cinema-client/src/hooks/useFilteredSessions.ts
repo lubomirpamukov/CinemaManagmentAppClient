@@ -4,6 +4,19 @@ import type { TSessionDisplay } from "../validations";
 import type { PaginatedResponse } from "./usePaginated";
 import type { FetchBookingsSessionParams } from "../services";
 
+/**
+ * Fetches a paginated list of movie sessions based on a set of filter criteria.
+ * 
+ * @param {FetchBookingsSessionParams} filters - An object containing the filter criteria.
+ *   Note: For performance, this object should be memoized (e.g., with `useMemo`) in the calling component.
+ * @returns {{
+ *   sessions: TSessionDisplay[];
+ *   loading: boolean;
+ *   error: string | null;
+ *   totalPages: number;
+ *   currentPage: number;
+ * }} An object containing the session data and the current request state.
+ */
 export const useFilteredSessions = (filters: FetchBookingsSessionParams) => {
   const [sessions, setSessions] = useState<TSessionDisplay[]>([]);
   const [loading, setLoading] = useState<boolean>(false);

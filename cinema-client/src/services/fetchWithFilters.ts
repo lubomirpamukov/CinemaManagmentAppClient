@@ -1,62 +1,59 @@
-import { ZodError, type ZodSchema } from "zod";
+import { z, ZodSchema } from "zod";
 
-const BASE_URL = "http://localhost:3123";
+const BASE_URL = "http://localhost:3123"; 
+
 /**
- * Fetches and validates data from the specified endpoint with optional query parameters.
+ * A generic fetch utility that validates the API response against a Zod schema.
  *
- * @template T - The expected return type of the response data, inferred from the schema.
- * @param {string} baseEndpoint - The API endpoint to fetch from (e.g., "/session").
- * @param {ZodSchema<T>} schema - The Zod schema to validate the response data.
- * @param {Record<string, string | number | boolean | undefined>} [params] - Optional query parameters.
- * @throws {Error} If the request fails or if the response data fails schema validation.
- * @returns {Promise<T>} Resolves with the validated response data.
+ * @template TSchema The type of the Zod schema provided.
+ * @param endpoint The API endpoint to fetch from (e.g., "/movies").
+ * @param schema The Zod schema to use for parsing the response.
+ * @param params Optional query parameters to send with the request.
+ * @returns A promise that resolves to the parsed and validated data. The return type is inferred from the schema.
+ * @throws Throws an error if the fetch fails, the response is not ok, or the data fails validation.
  */
-export const fetchWithFilters = async <T>(
-  baseEndpoint: string, // e.g /session , /movie , etc ..,
-  schema: ZodSchema<T>,
-  params?: Record<string, string | number | boolean | undefined>
-): Promise<T> => {
-  const queryParams = new URLSearchParams();
-
+export const fetchWithFilters = async <TSchema extends ZodSchema<any>>(
+  endpoint: string,
+  schema: TSchema,
+  params?: Record<string, any>
+): Promise<z.infer<TSchema>> => {
+  const query = new URLSearchParams();
   if (params) {
-    for (const key in params) {
-      const value = params[key];
+    Object.entries(params).forEach(([key, value]) => {
       if (value !== undefined && value !== null) {
-        queryParams.append(key, String(value));
+        query.append(key, String(value));
       }
-    }
+    });
   }
 
-  //add ? if there are params
-  const queryString = queryParams.toString();
-  const url = `${BASE_URL}${baseEndpoint}${
-    queryString ? `?${queryString}` : ""
-  }`;
-
-  const response = await fetch(url, {
+  const response = await fetch(`${BASE_URL}${endpoint}?${query.toString()}`, {
     method: "GET",
     credentials: "include",
   });
 
   if (!response.ok) {
-    let errorMsg = `Failed to fetch data from ${baseEndpoint}: ${response.status}`;
+    let errMsg = `API Error at ${endpoint}: ${response.status}`;
     try {
       const errorData = await response.json();
       if (errorData && errorData.message) {
-        errorMsg += ` - ${errorData.message}`;
+        errMsg += ` - ${errorData.message}`;
       }
-    } catch (error: any) {}
-    throw new Error(errorMsg);
-  }
-  const result = await response.json();
-
-  //Validate successful response against schema
-  try {
-    return schema.parse(result);
-  } catch (error) {
-    if (error instanceof ZodError) {
-      throw new Error(`API response validation failed - ${error.errors.map((e) => e.message).join(", ")}`)
+    } catch (error) {
     }
-    throw error;
+    throw new Error(errMsg);
   }
+
+  const data = await response.json();
+
+  const validationResult = schema.safeParse(data);
+
+  if (!validationResult.success) {
+    throw new Error(
+      `API response validation failed: ${validationResult.error.errors
+        .map((e) => e.message)
+        .join(", ")}`
+    );
+  }
+
+  return validationResult.data;
 };
