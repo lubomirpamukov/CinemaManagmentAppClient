@@ -21,7 +21,7 @@ const addressSchema = z.object({
 
 //User validation schema
 export const userSchema = z.object({
-  id: z.string().optional(),
+  id: z.string(),
   name: z
     .string()
     .min(4, UserValidation.name)
@@ -36,7 +36,7 @@ export const userSchema = z.object({
   address: addressSchema.optional()
 });
 
-export const userResponseSchema = userSchema.omit({ password: true});
+export const userResponseSchema = userSchema.omit({ password: true}).extend({ role: z.string()});
 export type TUserResponse = z.infer<typeof userResponseSchema>;
 
 export type TUser = z.infer<typeof userSchema>;
@@ -45,6 +45,8 @@ export type TUser = z.infer<typeof userSchema>;
 export const profileDetailsSchema = userSchema.pick({ name: true, email: true, contact: true, address: true});
 export type TProfileDetails = z.infer<typeof profileDetailsSchema>;
 
+export const userUpdateSchema = userSchema.partial();
+export type TUserUpdate = z.infer<typeof userUpdateSchema>;
 
 // schmea for changing the Password
 export const changePasswordSchema = z.object({

@@ -1,9 +1,9 @@
 import React from "react";
 import styles from "./UserProfileCard.module.css";
-import type { TUser } from "../../validations";
+import type { TUserResponse } from "../../validations";
 
 type UserProfileCardProps = {
-    user: TUser
+    user: TUserResponse
 }
 
 const UserProfileCard: React.FC<UserProfileCardProps> = ({ user }) => {

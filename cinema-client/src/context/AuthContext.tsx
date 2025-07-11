@@ -1,8 +1,8 @@
 import React, { createContext, useEffect, useState } from "react";
 import { logoutUser, getMe, loginUser } from "../services";
-import type { TUser } from "../validations";
+import type { TUserResponse } from "../validations";
 
-type AuthUser = TUser & { id: string; role: string };
+type AuthUser = TUserResponse & { id: string; role: string };
 
 type AuthContextType = {
   isAuthenticated: boolean;

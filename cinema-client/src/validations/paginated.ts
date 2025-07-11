@@ -5,7 +5,7 @@ export const createPaginatedResponseSchema = <T extends ZodTypeAny>(
 ) => {
   return z.object({
     data: z.array(itemSchema),
-    totalPages: z.number(),
-    currentPage: z.number(),
+    totalPages: z.number().int().positive().default(1),
+    currentPage: z.number().int().positive().default(1),
   });
 };

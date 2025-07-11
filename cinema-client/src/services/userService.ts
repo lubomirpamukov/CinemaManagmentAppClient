@@ -4,6 +4,7 @@ import {
   userResponseSchema,
   type TUserResponse,
   type TUser,
+  type TUserUpdate,
 } from "../validations";
 import { mongooseObjectIdValidationRegex } from "../validations";
 
@@ -63,14 +64,12 @@ export const registerUser = async (userData: TUser) => {
  */
 export const updateUser = async (
   userId: string,
-  updates: Partial<TUser & { password?: string }>
+  updates: TUserUpdate,
 ): Promise<TUserResponse> => {
   try {
     if (!mongooseObjectIdValidationRegex.parse(userId)) {
       throw new Error("Invalid user ID format. Please try again.");
     }
-
-    const validateUpdates = userSchema.partial().parse(updates);
 
     const response = await fetch(`${BASE_URL}/users/${userId}`, {
       method: "PATCH",
@@ -78,7 +77,7 @@ export const updateUser = async (
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(validateUpdates),
+      body: JSON.stringify(updates),
     });
 
     //handle non-successful http responses
