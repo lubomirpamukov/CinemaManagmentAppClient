@@ -22,21 +22,33 @@ export const useMovieDetails = (movieId?: string | null) => {
       return;
     }
 
+    const controller = new AbortController();
+
     const loadMovieDetails = async () => {
       setLoading(true);
       setError(null);
       try {
-        const movie = await fetchMovieById(movieId);
+        const movie = await fetchMovieById(movieId, {
+          signal: controller.signal,
+        });
         setMovie(movie);
       } catch (error: any) {
-        setError(error.message || "An unknown error occurred.");
-        setMovie(null);
+        if (error.name !== "AbortError") {
+          setError(error.message || "An unknown error occurred.");
+          setMovie(null);
+        }
       } finally {
-        setLoading(false);
+          if (!controller.signal.aborted) {
+          setLoading(false);
+        }
       }
     };
 
     loadMovieDetails();
+
+    return () => {
+      controller.abort();
+    };
   }, [movieId]);
 
   return { movie, loading, error };

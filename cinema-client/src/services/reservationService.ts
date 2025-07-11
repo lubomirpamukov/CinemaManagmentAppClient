@@ -57,12 +57,15 @@ export const createReservation = async (
 /**
  * Fetches reservations for a user, with optional filters.
  * @param {TReservationFilters} [filters] - Optional filters, such as userId and status array.
+ * @param {object} [options] Optional fetch options
+ * @param {AbortSignal} [options.signal] An AbortSignal to cancel request if needed.
  * @throws {Error} If the backend returns an error (with server message and status if available),
  * or if the response data fails schema validation.
  * @returns {Promise<TReservationDisplay[]>} Resolves to an array of validated reservation objects.
  */
 export const fetchUserReservations = async (
-  filters?: TReservationFilters
+  filters?: TReservationFilters,
+  options?: { signal?: AbortSignal }
 ): Promise<TReservationDisplay[]> => {
   const params = new URLSearchParams();
 
@@ -81,6 +84,7 @@ export const fetchUserReservations = async (
   const response = await fetch(`${BASE_URL}?${params.toString()}`, {
     method: "GET",
     credentials: "include",
+    signal: options?.signal,
   });
 
   if (!response.ok) {
@@ -118,9 +122,9 @@ export const fetchUserReservations = async (
 export const deleteReservation = async (
   reservationId: string
 ): Promise<void> => {
-    if (!mongooseObjectIdValidationRegex.parse(reservationId))
+  if (!mongooseObjectIdValidationRegex.parse(reservationId))
     throw new Error("Invalid Reservation ID format.");
-  
+
   const deletedReservation = await fetch(`${BASE_URL}/${reservationId}`, {
     method: "DELETE",
     credentials: "include",
@@ -146,9 +150,9 @@ export const deleteReservation = async (
 export const confirmReservationPayment = async (
   reservationId: string
 ): Promise<TReservationDisplay> => {
-    if (!mongooseObjectIdValidationRegex.parse(reservationId))
-      throw new Error("Invalid Reservation ID format.");
-    
+  if (!mongooseObjectIdValidationRegex.parse(reservationId))
+    throw new Error("Invalid Reservation ID format.");
+
   const response = await fetch(`${BASE_URL}/${reservationId}/confirm`, {
     method: "PATCH",
     credentials: "include",

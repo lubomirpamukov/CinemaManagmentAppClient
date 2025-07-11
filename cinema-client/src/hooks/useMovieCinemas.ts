@@ -27,21 +27,33 @@ export const useMovieCinemas = (
       return;
     }
 
+    const controller = new AbortController();
+
     const loadCinemas = async () => {
       setLoading(true);
       setError(null);
       try {
-        const fetchedCinemas = await fetchCinemasByMovieAndCity(movieId, city);
+        const fetchedCinemas = await fetchCinemasByMovieAndCity(movieId, city, {
+          signal: controller.signal,
+        });
         setCinemas(fetchedCinemas);
       } catch (err: any) {
-        setError(err.message || "An unknown error occured");
-        setCinemas([]);
+        if (err.name !== "AbortError") {
+          setError(err.message || "An unknown error occured");
+          setCinemas([]);
+        }
       } finally {
-        setLoading(false);
+          if (!controller.signal.aborted) {
+          setLoading(false);
+        }
       }
     };
 
     loadCinemas();
+
+    return () => {
+      controller.abort();
+    };
   }, [movieId, city]);
 
   return { cinemas, loading, error };

@@ -6,7 +6,7 @@ import type { FetchBookingsSessionParams } from "../services";
 
 /**
  * Fetches a paginated list of movie sessions based on a set of filter criteria.
- * 
+ *
  * @param {FetchBookingsSessionParams} filters - An object containing the filter criteria.
  *   Note: For performance, this object should be memoized (e.g., with `useMemo`) in the calling component.
  * @returns {{
@@ -39,27 +39,37 @@ export const useFilteredSessions = (filters: FetchBookingsSessionParams) => {
       return;
     }
 
+    const controller = new AbortController();
+
     const loadSessions = async () => {
       setLoading(true);
       setError(null);
 
       try {
         const sessions: PaginatedResponse<TSessionDisplay> =
-          await fetchBookingSessions(filters);
+          await fetchBookingSessions(filters, { signal: controller.signal });
         setSessions(sessions.data);
         setTotalPages(sessions.totalPages);
         setCurrentPage(sessions.currentPage);
       } catch (error: any) {
-        setError(error.message || "Failed to fetch sessions");
-        setSessions([]);
-        setTotalPages(0);
-        setCurrentPage(0);
+        if (error.name !== "AbortError") {
+          setError(error.message || "Failed to fetch sessions");
+          setSessions([]);
+          setTotalPages(0);
+          setCurrentPage(0);
+        }
       } finally {
-        setLoading(false);
+        if (!controller.signal.aborted) {
+          setLoading(false);
+        }
       }
     };
 
     loadSessions();
+
+    return () => {
+      controller.abort();
+    };
   }, [filters]);
 
   return { sessions, loading, error, totalPages, currentPage };

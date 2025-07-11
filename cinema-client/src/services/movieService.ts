@@ -14,12 +14,17 @@ const BASE_URL = "http://localhost:3123/movies";
  * Validates movieId before making backend call.
  *
  * @param {string} movieId - The ID of the movie.
+ * @param {object} [options] Optional fetch options.
+ * @param {AbortSignal} [options.signal] An AbortSignal that can be used to cancel request.
  * @throws {Error} Throws if the movieId is invalid,
  * if the backend returns an error (with server message and status if available),
  * or if the response data fails schema validation.
  * @returns {Promise<TMovie>} Resolves to validated movie object.
  */
-export const fetchMovieById = async (movieId: string): Promise<TMovie> => {
+export const fetchMovieById = async (
+  movieId: string,
+  options?: { signal?: AbortSignal }
+): Promise<TMovie> => {
   if (!mongooseObjectIdValidationRegex.parse(movieId))
     throw new Error("Invalid Movie ID format.");
 
@@ -29,6 +34,7 @@ export const fetchMovieById = async (movieId: string): Promise<TMovie> => {
   const movieResponse = await fetch(`${BASE_URL}/${movieId}`, {
     method: "GET",
     credentials: "include",
+    signal: options?.signal,
   });
 
   if (!movieResponse.ok) {
@@ -57,12 +63,17 @@ export const fetchMovieById = async (movieId: string): Promise<TMovie> => {
 
 /**
  *  Fetches a ShowcaseMovie object from endpoint "/movies/showcase"
+ * @param {object} [options] Optional fetch options.
+ * @param {AbortSignal} [options.signal] An AbortSignal that can be used to cancel request.
  * @throws {Error} If the backend returns an error (throws server message and status if avaliable),
  * or if the response data fails schema validation (throws zod validation errors.)
  * @returns {Promise<ShowcaseMovies>} Resolves to the validated showcase movies object.
  */
-export const fetchShowcaseMovies = async (): Promise<ShowcaseMovies> => {
+export const fetchShowcaseMovies = async (options?: {
+  signal: AbortSignal;
+}): Promise<ShowcaseMovies> => {
   const response = await fetch(`${BASE_URL}/showcase`, {
+    signal: options?.signal,
     method: "GET",
     credentials: "include",
   });

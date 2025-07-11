@@ -22,21 +22,33 @@ export const useMovieCities = (movieId?: string | null) => {
       return;
     }
 
+    const controller = new AbortController();
+
     const loadCities = async () => {
       setLoading(true);
       setError(null);
       try {
-        const fetchedCities = await fetchMovieCities(movieId);
+        const fetchedCities = await fetchMovieCities(movieId, {
+          signal: controller.signal,
+        });
         setCities(fetchedCities);
       } catch (error: any) {
-        setError(error.message || "An unknown error occurred.");
-        setCities([]);
+        if (error.name !== "AbortError") {
+          setError(error.message || "An unknown error occurred.");
+          setCities([]);
+        }
       } finally {
-        setLoading(false);
+          if (!controller.signal.aborted) {
+          setLoading(false);
+        }
       }
     };
 
     loadCities();
+
+    return () => {
+      controller.abort();
+    }
   }, [movieId]);
 
   return { cities, loading, error };

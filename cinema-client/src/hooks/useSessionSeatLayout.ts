@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { fetchSessionSeatLayout} from "../services";
+import { fetchSessionSeatLayout } from "../services";
 import { type TSessionSeatLayout } from "../validations";
 
 /**
@@ -22,20 +22,32 @@ export const useSessionSeatLayout = (sessionId: string | undefined) => {
       return;
     }
 
+    const controller = new AbortController();
+
     const getSeatsLayout = async () => {
       setLoading(true);
       setError(null);
       try {
-        const sessionSeatLayout = await fetchSessionSeatLayout(sessionId);
+        const sessionSeatLayout = await fetchSessionSeatLayout(sessionId, {
+          signal: controller.signal,
+        });
         setLayout(sessionSeatLayout);
       } catch (error: any) {
-        setError(error.message || "A unknown error occurred.");
+        if (error.name !== "AbortError") {
+          setError(error.message || "A unknown error occurred.");
+        }
       } finally {
-        setLoading(false);
+        if (!controller.signal.aborted) {
+          setLoading(false);
+        }
       }
-    }
+    };
 
     getSeatsLayout();
+
+    return () => {
+      controller.abort();
+    };
   }, [sessionId]);
 
   return { layout, loading, error };

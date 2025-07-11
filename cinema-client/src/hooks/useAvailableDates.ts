@@ -27,24 +27,36 @@ export const useAvailableDates = (
       return;
     }
 
+    const controller = new AbortController();
+
     const loadDates = async () => {
       setLoading(true);
       setError(null);
 
       try {
-        const dates = await fetchAvailableDates(movieId, cinemaId);
+        const dates = await fetchAvailableDates(movieId, cinemaId, {
+          signal: controller.signal,
+        });
         setAvailableDates(dates);
       } catch (error: any) {
-        setError(
-          error.message || "An unknown error occured while fetching dates."
-        );
-        setAvailableDates([]);
+        if (error.name !== "AbortError") {
+          setError(
+            error.message || "An unknown error occured while fetching dates."
+          );
+          setAvailableDates([]);
+        }
       } finally {
-        setLoading(false);
+          if (!controller.signal.aborted) {
+          setLoading(false);
+        }
       }
     };
 
     loadDates();
+
+    return () => {
+      controller.abort();
+    }
   }, [movieId, cinemaId]);
 
   return { availableDates, loading, error };

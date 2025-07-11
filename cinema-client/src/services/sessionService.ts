@@ -25,7 +25,8 @@ const BASE_URL = "http://localhost:3123";
  */
 export const fetchCinemasByMovieAndCity = async (
   movieId: string,
-  city: string
+  city: string,
+  options?: { signal?: AbortSignal }
 ): Promise<TCinema[]> => {
     if (!mongooseObjectIdValidationRegex.parse(movieId))
     throw new Error("Invalid Movie ID format.");
@@ -37,6 +38,7 @@ export const fetchCinemasByMovieAndCity = async (
     {
       method: "GET",
       credentials: "include",
+      signal: options?.signal,
     }
   );
 
@@ -71,13 +73,16 @@ export const fetchCinemasByMovieAndCity = async (
  *
  * @param {string} movieId - The ID of the movie.
  * @param {string} cinemaId - The ID of the cinema.
+ * @param {object} [options] - Optional fetch options.
+ * @param {AbortSignal} [options.signal] - An AbortSignal to allow for request cancellation.
  * @throws {Error} Throws an error if the request fails (including server status and message if available)
  * or if the response data contains invalid date strings.
  * @returns {Promise<string[]>} Resolves to an array of validated and available date strings.
  */
 export const fetchAvailableDates = async (
   movieId: string,
-  cinemaId: string
+  cinemaId: string,
+  options?: { signal?: AbortSignal }
 ): Promise<string[]> => {
   if (!mongooseObjectIdValidationRegex.parse(movieId))
     throw new Error("Invalid Movie ID format.");
@@ -90,6 +95,7 @@ export const fetchAvailableDates = async (
     {
       method: "GET",
       credentials: "include",
+      signal: options?.signal,
     }
   );
 
@@ -141,19 +147,21 @@ export type FetchBookingsSessionParams = {
  * Fetches a paginated list of booking sessions based on filter criteria.
  *
  * @param {FetchBookingsSessionParams} params - The filter and pagination parameters.
+ * @param {AbortSignal} [options.signal] - An AbortStignal to allow for request cancellation.
  * @throws {Error} Throws an error if the fetch request fails or if the response data fails schema validation.
  * @returns {Promise<PaginatedResponse<TSessionDisplay>>} A promise that resolves to the validated paginated session data.
  */
 export const fetchBookingSessions = async (
-  params: FetchBookingsSessionParams
+  params: FetchBookingsSessionParams,
+  options?: { signal?: AbortSignal}
 ): Promise<PaginatedResponse<TSessionDisplay>> => {
   const endpoint = "/session";
 
   // 1. Create the specific schema for a paginated response of sessions.
   const paginatedSessionSchema =
-    createPaginatedResponseSchema(sessionDisplaySchema);
+    createPaginatedResponseSchema(sessionDisplaySchema) as z.ZodType<PaginatedResponse<TSessionDisplay>>;
 
-  return fetchWithFilters(endpoint, paginatedSessionSchema, params);
+  return fetchWithFilters(endpoint, paginatedSessionSchema, params, options);
 };
 
 
@@ -161,16 +169,19 @@ export const fetchBookingSessions = async (
  * Fetches the complete seat layout for a specific session.
  *
  * @param {string} sessionId - The ID of the session.
+ * @param {object} [options] - Optional fetch options.
+ * @param {AbortSignal} [options.signal] An AbortSignal that can be used to cancel the request.
  * @throws {Error} Throws an error if the session ID is invalid, the request fails, or the response data is malformed.
  * @returns {Promise<TSessionSeatLayout>} A promise that resolves to the validated session seat layout data.
  */
 export const fetchSessionSeatLayout = async (
-  sessionId: string
+  sessionId: string,
+  options?: { signal?: AbortSignal}
 ): Promise<TSessionSeatLayout> => {
   if (!mongooseObjectIdValidationRegex.parse(sessionId)) {
     throw new Error("Invalid Session ID format.")
   }
 
   const endpoint = `/session/${sessionId}/seat-layout`;
-  return await fetchWithFilters(endpoint, sessionSeatLayoutSchema);
+  return await fetchWithFilters(endpoint, sessionSeatLayoutSchema,options);
 };

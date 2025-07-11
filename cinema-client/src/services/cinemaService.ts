@@ -8,16 +8,22 @@ const BASE_URL = "http://localhost:3123/cinemas";
  * Makes a GET request to the endpoint `/cinemas/movies/:movieId`.
  *
  * @param {string} movieId - The ID of the movie.
- * @throws {Error} If response fails thorws an error with the details from the backend or a generic message.
+ * @param {object} [options] - Optional fetch options.
+ * @param {AbortSignal} [options.signal] - An AbortSignal that can be used to cancel the request.
+ * @throws {Error} If the request fails, throws an error with details from the backend or a generic message.
  * @returns {Promise<string[]>} Resolves to an array of city names where the movie is shown.
  */
-export const fetchMovieCities = async (movieId: string): Promise<string[]> => {
+export const fetchMovieCities = async (
+  movieId: string,
+  options?: { signal: AbortSignal }
+): Promise<string[]> => {
   if (!mongooseObjectIdValidationRegex.parse(movieId))
     throw new Error("Invalid Movie ID format.");
 
   const cities = await fetch(`${BASE_URL}/movies/${movieId}`, {
     method: "GET",
     credentials: "include",
+    signal: options?.signal,
   });
 
   if (!cities.ok) {

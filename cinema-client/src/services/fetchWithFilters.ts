@@ -6,16 +6,19 @@ const BASE_URL = "http://localhost:3123";
  * A generic fetch utility that validates the API response against a Zod schema.
  *
  * @template TSchema The type of the Zod schema provided.
- * @param endpoint The API endpoint to fetch from (e.g., "/movies").
- * @param schema The Zod schema to use for parsing the response.
- * @param params Optional query parameters to send with the request.
- * @returns A promise that resolves to the parsed and validated data. The return type is inferred from the schema.
- * @throws Throws an error if the fetch fails, the response is not ok, or the data fails validation.
+ * @param {string} endpoint The API endpoint to fetch from (e.g., "/movies").
+ * @param {TSchema} schema The Zod schema to use for parsing the response.
+ * @param {object} [options] Optional fetch options
+ * @param {AbortSignal} [options.signal] An AbortSignal that can cancel a request.
+ * @param {Record<string, any>}params Optional query parameters to send with the request.
+ * @throws {Error} Throws an error if the fetch fails, the response is not ok, or the data fails validation.
+ * @returns {Promise<TSchema>} A promise that resolves to the parsed and validated data. The return type is inferred from the schema.
  */
 export const fetchWithFilters = async <TSchema extends ZodSchema<any>>(
   endpoint: string,
   schema: TSchema,
-  params?: Record<string, any>
+  params?: Record<string, any>,
+  options?: { signal?: AbortSignal }
 ): Promise<z.infer<TSchema>> => {
   const query = new URLSearchParams();
   if (params) {
@@ -29,6 +32,7 @@ export const fetchWithFilters = async <TSchema extends ZodSchema<any>>(
   const response = await fetch(`${BASE_URL}${endpoint}?${query.toString()}`, {
     method: "GET",
     credentials: "include",
+    signal: options?.signal,
   });
 
   if (!response.ok) {

@@ -37,7 +37,9 @@ export const useShowcase = () => {
           setError("An unknown error occurred.");
         }
       } finally {
-        setLoading(false);
+        if (!controller.signal.aborted) {
+          setLoading(false);
+        }
       }
     };
 

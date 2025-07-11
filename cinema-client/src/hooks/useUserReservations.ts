@@ -17,30 +17,42 @@ export const useUserReservations = (filters: TReservationFilters) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchReservations = useCallback(async () => {
-    if (!filters.userId) {
-      setReservations([]);
-      return;
-    }
-
-    setLoading(true);
-    setError(null);
-
-    try {
-      const reservationsData = await fetchUserReservations(filters);
-      setReservations(reservationsData);
-    } catch (err) {
-      if (err instanceof Error) {
-        setError(err.message || "An unknown error occurred.");
+  const fetchReservations = useCallback(
+    async (signal?: AbortSignal) => {
+      if (!filters.userId) {
+        setReservations([]);
+        return;
       }
-      setReservations([]);
-    } finally {
-      setLoading(false);
-    }
-  }, [filters.userId, filters.status]);
+
+      setLoading(true);
+      setError(null);
+
+      try {
+        const reservationsData = await fetchUserReservations(filters, {
+          signal,
+        });
+        setReservations(reservationsData);
+      } catch (err: any) {
+        if (err.name !== "AbortError") {
+          setError(err.message || "An unknown error occurred.");
+          setReservations([]);
+        }
+      } finally {
+        if (!signal?.aborted) {
+          setLoading(false);
+        }
+      }
+    },
+    [filters.userId, filters.status]
+  );
 
   useEffect(() => {
-    fetchReservations();
+    const controller = new AbortController();
+    fetchReservations(controller.signal);
+
+    return () => {
+      controller.abort();
+    }
   }, [fetchReservations]);
 
   return { reservations, loading, error, refetch: fetchReservations };
